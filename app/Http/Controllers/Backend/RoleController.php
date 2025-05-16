@@ -14,12 +14,12 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::get();
-        return view('role-permission.role.index', compact('roles'));
+        return view('backend.role-permission.role.index', compact('roles'));
     }
 
     public function create()
     {
-        return view('role-permission.role.create');
+        return view('backend.role-permission.role.create');
     }
 
     public function store(Request $request)
@@ -27,12 +27,12 @@ class RoleController extends Controller
         $request->validate(['name' => 'required|string|max:255|unique:roles,name']);
         Role::create(['name' => $request->name]);
 
-        return redirect('backend/roles')->with('status', 'Role Created Successfully');
+        return redirect()->route('backend.roles.index')->with('status', 'Role Created Successfully');
     }
 
     public function edit(Role $role)
     {
-        return view('role-permission.role.edit', compact('role'));
+        return view('backend.role-permission.role.edit', compact('role'));
     }
 
     public function update(Request $request, Role $role)
@@ -49,14 +49,14 @@ class RoleController extends Controller
             'name' => $request->name
         ]);
 
-        return redirect('backend/roles')->with('status', 'Role Updated Successfully');
+        return redirect()->route('backend.roles.index')->with('status', 'Role Updated Successfully');
     }
 
     public function destroy($roleId)
     {
         $role = Role::find($roleId);
         $role->delete();
-        return redirect('backend/roles')->with('status', 'Role Deleted Successfully');
+        return redirect()->route('backend.roles.index')->with('status', 'Role Deleted Successfully');
     }
 
     public function addPermissionToRole($roleId)
@@ -68,7 +68,7 @@ class RoleController extends Controller
             ->pluck('role_has_permissions.permission_id', 'role_has_permissions.permission_id')
             ->all();
 
-        return view('role-permission.role.add-permissions', compact('permissions', 'role','rolePermissions'));
+        return view('backend.role-permission.role.add-permissions', compact('permissions', 'role','rolePermissions'));
     }
 
     public function givePermissionToRole(Request $request, $roleId)

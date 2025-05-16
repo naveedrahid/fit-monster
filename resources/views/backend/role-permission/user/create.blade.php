@@ -14,11 +14,11 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>Create User
-                            <a href="{{ url('users') }}" class="btn btn-danger float-end">Back</a>
+                            <a href="{{ route('backend.users.index') }}" class="btn btn-danger float-end">Back</a>
                         </h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ url('users') }}" method="POST">
+                        <form action="{{ route('backend.users.store') }}" method="POST">
                             @csrf
 
                             <div class="mb-3">
@@ -27,11 +27,11 @@
                             </div>
                             <div class="mb-3">
                                 <label for=""> Email</label>
-                                <input type="text" name=" email" class="form-control" />
+                                <input type="email" name=" email" class="form-control" />
                             </div>
                             <div class="mb-3">
                                 <label for="">Password</label>
-                                <input type="text" name="password" class="form-control" />
+                                <input type="password" name="password" class="form-control" />
                             </div>
                             <div class="mb-3">
                                 <label for="">Roles</label>

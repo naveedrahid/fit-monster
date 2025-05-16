@@ -11,12 +11,12 @@ class PermissionController extends Controller
     public function index()
     {
         $permissions = Permission::paginate(10);
-        return view('role-permission.permission.index', ['permissions' => $permissions]);
+        return view('backend.role-permission.permission.index', ['permissions' => $permissions]);
     }
 
     public function create()
     {
-        return view('role-permission.permission.create');
+        return view('backend.role-permission.permission.create');
     }
 
     public function store(Request $request)
@@ -33,12 +33,12 @@ class PermissionController extends Controller
             'name' => $request->name
         ]);
 
-        return redirect('backend/permissions')->with('status','Permission Created Successfully');
+        return redirect()->route('backend.permissions.index')->with('status','Permission Created Successfully');
     }
 
     public function edit(Permission $permission)
     {
-        return view('role-permission.permission.edit', ['permission' => $permission]);
+        return view('backend.role-permission.permission.edit', ['permission' => $permission]);
     }
 
     public function update(Request $request, Permission $permission)
@@ -55,13 +55,13 @@ class PermissionController extends Controller
             'name' => $request->name
         ]);
 
-        return redirect('backend/permissions')->with('status','Permission Updated Successfully');
+        return redirect()->route('backend.permissions.index')->with('status','Permission Updated Successfully');
     }
 
     public function destroy($permissionId)
     {
         $permission = Permission::find($permissionId);
         $permission->delete();
-        return redirect('backend/permissions')->with('status','Permission Deleted Successfully');
+        return redirect()->route('backend.permissions.index')->with('status','Permission Deleted Successfully');
     }
 }

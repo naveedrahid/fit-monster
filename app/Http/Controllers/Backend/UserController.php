@@ -13,13 +13,13 @@ class UserController extends Controller
     public function index()
     {
         $users = User::get();
-        return view('role-permission.user.index', ['users' => $users]);
+        return view('backend.role-permission.user.index', ['users' => $users]);
     }
  
     public function create()
     {
         $roles = Role::pluck('name', 'name')->all();
-        return view('role-permission.user.create', ['roles' => $roles]);
+        return view('backend.role-permission.user.create', ['roles' => $roles]);
     }
 
     public function store(Request $request)
@@ -39,14 +39,14 @@ class UserController extends Controller
 
         $user->syncRoles($request->roles);
 
-        return redirect('backend/users')->with('status', 'User created successfully with roles');
+        return redirect()->route('backend.users.index')->with('status', 'User created successfully with roles');
     }
 
     public function edit(User $user)
     {
         $roles = Role::pluck('name', 'name')->all();
         $userRoles = $user->roles->pluck('name', 'name')->all();
-        return view('role-permission.user.edit', [
+        return view('backend.role-permission.user.edit', [
             'user' => $user,
             'roles' => $roles,
             'userRoles' => $userRoles
@@ -75,7 +75,7 @@ class UserController extends Controller
         $user->update($data);
         $user->syncRoles($request->roles);
 
-        return redirect('backend/users')->with('status', 'User Updated Successfully with roles');
+        return redirect()->route('backend.users.index')->with('status', 'User Updated Successfully with roles');
     }
 
     public function destroy($userId)
@@ -83,6 +83,6 @@ class UserController extends Controller
         $user = User::findOrFail($userId);
         $user->delete();
 
-        return redirect('backend/users')->with('status', 'User Delete Successfully');
+        return redirect()->route('backend.users.index')->with('status', 'User Delete Successfully');
     }
 }
