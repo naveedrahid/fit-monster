@@ -1,32 +1,34 @@
 @section('title', 'Sign up')
 <x-app-layout>
-    <div class="container-xxl h-100">
-        <div class="row justify-content-center h-100 align-items-center">
-            <div class="col-md-5 col-12">
-                <div class="authentication-wrapper authentication-basic container-p-y">
-                    <div class="authentication-inner">
-                        <!-- Register -->
-                        <div class="card px-sm-6 px-0">
-                            <div class="card-body">
-                                <!-- Logo -->
-                                <div class="app-brand justify-content-center">
-                                    <a href="javascript:void(0);" class="app-brand-link gap-2">
-                                        <span class="app-brand-logo demo">
-                                            <span class="text-primary">
-                                                <img src="{{ asset('admin/img/logo.png') }}" width="25" class="img-fluid" alt="">
+    <div style="background:url({{ asset('admin/img/bglogin.jpg') }}) no-repeat center / cover;" class="h-100">
+        <div class="container-xxl h-100">
+            <div class="row justify-content-center h-100 align-items-center">
+                <div class="col-md-5 col-12">
+                    <div class="authentication-wrapper authentication-basic container-p-y">
+                        <div class="authentication-inner">
+                            <!-- Register -->
+                            <div class="card px-sm-6 px-0">
+                                <div class="card-body">
+                                    <!-- Logo -->
+                                    <div class="app-brand justify-content-center">
+                                        <a href="javascript:void(0);" class="app-brand-link gap-2">
+                                            <span class="app-brand-logo demo">
+                                                <span class="text-primary">
+                                                    <img src="{{ asset('admin/img/logo.png') }}" width="25"
+                                                        class="img-fluid" alt="">
+                                                </span>
                                             </span>
-                                        </span>
-                                        <span
-                                            class="app-brand-text demo text-heading fw-bold">{{ __('Sneat') }}</span>
-                                    </a>
-                                </div>
-                                <!-- /Logo -->
-                                <h4 class="mb-1">{{ __('Adventure starts here') }} 👋</h4>
-                                <p class="mb-6">{{ __('Make your app management easy and fun!') }}</p>
+                                            <span
+                                                class="app-brand-text demo text-heading fw-bold">{{ __('Sneat') }}</span>
+                                        </a>
+                                    </div>
+                                    <!-- /Logo -->
+                                    <h4 class="mb-1">{{ __('Adventure starts here') }} 👋</h4>
+                                    <p class="mb-6">{{ __('Make your app management easy and fun!') }}</p>
 
-                                <form id="formAuthentication" class="mb-6" action="{{ route('register') }}"
-                                    method="POST">
-                                    @csrf
+                                    <form id="formAuthentication" class="mb-6" action="{{ route('register') }}"
+                                        method="POST">
+                                        @csrf
 
                                         <div class="mb-6">
                                             <label class="form-label" for="name">{{ __('Name') }}</label>
@@ -41,8 +43,7 @@
                                             @enderror
                                         </div>
                                         <div class="mb-6">
-                                            <label for="email"
-                                                class="form-label">{{ __('Email Address') }}</label>
+                                            <label for="email" class="form-label">{{ __('Email Address') }}</label>
 
                                             <input id="email" type="email"
                                                 class="form-control @error('email') is-invalid @enderror" name="email"
@@ -57,9 +58,13 @@
                                         <div class="form-password-toggle mb-6">
                                             <label for="password" class="form-label">{{ __('Password') }}</label>
                                             <div class="input-group input-group-merge">
-                                                <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="············" aria-describedby="password" required autocomplete="new-password">
-                                                <span class="input-group-text cursor-pointer"><i class="icon-base bx bx-hide"></i></span>
-    
+                                                <input type="password" id="password"
+                                                    class="form-control @error('password') is-invalid @enderror"
+                                                    name="password" placeholder="············"
+                                                    aria-describedby="password" required autocomplete="new-password">
+                                                <span class="input-group-text cursor-pointer"><i
+                                                        class="icon-base bx bx-hide"></i></span>
+
                                                 @error('password')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -69,10 +74,14 @@
 
                                         </div>
                                         <div class="form-password-toggle mb-6">
-                                            <label for="password-confirm" class="form-label">{{ __('Confirm Password') }}</label>
+                                            <label for="password-confirm"
+                                                class="form-label">{{ __('Confirm Password') }}</label>
                                             <div class="input-group input-group-merge">
-                                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" placeholder="············" aria-describedby="password" required autocomplete="new-password">
-                                                    <span class="input-group-text cursor-pointer"><i class="icon-base bx bx-hide"></i></span>
+                                                <input id="password-confirm" type="password" class="form-control"
+                                                    name="password_confirmation" placeholder="············"
+                                                    aria-describedby="password" required autocomplete="new-password">
+                                                <span class="input-group-text cursor-pointer"><i
+                                                        class="icon-base bx bx-hide"></i></span>
                                             </div>
                                         </div>
                                         <div class="mb-6">
@@ -80,10 +89,11 @@
                                                 {{ __('Register') }}
                                             </button>
                                         </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
+                            <!-- /Register -->
                         </div>
-                        <!-- /Register -->
                     </div>
                 </div>
             </div>

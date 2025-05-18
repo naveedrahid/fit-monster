@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Shift;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -15,26 +16,34 @@ class UserController extends Controller
         $users = User::get();
         return view('backend.role-permission.user.index', ['users' => $users]);
     }
- 
+
     public function create()
     {
         $roles = Role::pluck('name', 'name')->all();
-        return view('backend.role-permission.user.create', ['roles' => $roles]);
+        $shifts = Shift::all();
+
+        return view('backend.role-permission.user.create', [
+            'roles' => $roles,
+            'shifts' => $shifts
+        ]);
     }
+
 
     public function store(Request $request)
     {
         $request->validate([
+            'shift_id' => 'required|exists:shifts,id',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|max:20',
-            'roles' => 'required'
+            'roles' => 'required',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'shift_id' => $request->shift_id,
         ]);
 
         $user->syncRoles($request->roles);
@@ -46,10 +55,12 @@ class UserController extends Controller
     {
         $roles = Role::pluck('name', 'name')->all();
         $userRoles = $user->roles->pluck('name', 'name')->all();
+        $shifts = Shift::all();
         return view('backend.role-permission.user.edit', [
             'user' => $user,
             'roles' => $roles,
-            'userRoles' => $userRoles
+            'userRoles' => $userRoles,
+            'shifts' => $shifts
         ]);
     }
 
@@ -57,13 +68,17 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|max:20',
-            'roles' => 'required'
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'string|exists:roles,name',
+            'shift_id' => 'required|exists:shifts,id',
         ]);
 
         $data = [
             'name' => $request->name,
             'email' => $request->email,
+            'shift_id' => $request->shift_id,
         ];
 
         if (!empty($request->password)) {

@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(ShiftTableSeeder::class);
         $this->call(UserRolePermissionSeeder::class);
     }
 }
