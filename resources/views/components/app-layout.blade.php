@@ -128,13 +128,13 @@
 
                         <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
-                            <ul class="navbar-nav flex-row align-items-center justify-content-between w-100">
+                            <ul class="navbar-nav flex-row align-items-center justify-content-end w-100">
                                 <!-- User -->
                                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                     <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);"
                                         data-bs-toggle="dropdown">
                                         <div class="avatar avatar-online">
-                                            <img src="{{ asset('admin/assets/img/avatars/1.png') }}" alt
+                                            <img src="{{ asset('admin/img/placeholder.jpg') }}" alt
                                                 class="w-px-40 h-auto rounded-circle" />
                                         </div>
                                     </a>
@@ -144,13 +144,14 @@
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="avatar avatar-online">
-                                                            <img src="{{ asset('admin/assets/img/avatars/1.png') }}" alt
+                                                            <img src="{{ asset('admin/img/placeholder.jpg') }}" alt
                                                                 class="w-px-40 h-auto rounded-circle" />
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <h6 class="mb-0">John Doe</h6>
-                                                        <small class="text-body-secondary">Admin</small>
+                                                        <h6 class="mb-0">{{ auth()->user()->name }}</h6>
+                                                        <small
+                                                            class="text-body-secondary">{{ auth()->user()->getRoleNames()->first() }}</small>
                                                     </div>
                                                 </div>
                                             </a>
@@ -182,10 +183,18 @@
                                             <div class="dropdown-divider my-1"></div>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
+                                            <a class="dropdown-item" href="#"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                <i class="icon-base bx bx-power-off icon-md me-3"></i>
+                                                <span>Log Out</span>
                                             </a>
+
+                                            <form id="logout-form" action="{{ route('backend.logout') }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                            </form>
                                         </li>
+
                                     </ul>
                                 </li>
                                 <!--/ User -->
@@ -305,19 +314,19 @@
             let isValid = true;
 
             $(selectors).each(function() {
-            const value = $(this).val().trim();
-            const input = $(this).closest('.input-inner'); 
-            const errorFeedback = input.next('.invalid-feedback');
-            if (!value) {
-                isValid = false;
-                input.addClass('is-invalid');
-                if (errorFeedback.length === 0) {
-                input.after('<div class="invalid-feedback">This field is required.</div>');
+                const value = $(this).val().trim();
+                const input = $(this).closest('.input-inner');
+                const errorFeedback = input.next('.invalid-feedback');
+                if (!value) {
+                    isValid = false;
+                    input.addClass('is-invalid');
+                    if (errorFeedback.length === 0) {
+                        input.after('<div class="invalid-feedback">This field is required.</div>');
+                    }
+                } else {
+                    input.removeClass('is-invalid');
+                    errorFeedback.remove();
                 }
-            } else {
-                input.removeClass('is-invalid');
-                errorFeedback.remove();
-            }
             });
 
             return isValid;

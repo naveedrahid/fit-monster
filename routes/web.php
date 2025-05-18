@@ -20,6 +20,11 @@ Auth::routes();
 
 Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth']], function () {
 
+    Route::post('/logout', function () {
+        Auth::logout();
+        return redirect('/login');
+    })->name('logout');
+
     // Permissions Routes
     Route::group(['prefix' => 'permissions'], function () {
         Route::get('/', [PermissionController::class, 'index'])->middleware('permission:view permission')->name('permissions.index');

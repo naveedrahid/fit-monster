@@ -3,10 +3,9 @@
         <a href="javascript:void(0);" class="app-brand-link text-decoration-none">
             <span class="app-brand-logo demo">
                 <span class="text-primary">
-                    <img src="{{ asset('admin/img/logo.png') }}" width="25" class="img-fluid" alt="">
+                    <img src="{{ asset('admin/img/logo.jpg') }}"  class="img-fluid" alt="" style="height: 70px;object-fit: cover;width: 240px;">
                 </span>
             </span>
-            <span class="app-brand-text demo menu-text fw-bold ms-2">Dashboard</span>
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -62,5 +61,13 @@
                 </ul>
             </li>
         @endif
-</aside>
 
+        @can('view shift')
+            <li class="menu-item {{ request()->is('backend/shifts*') ? 'active open' : '' }}">
+                <a href="{{ route('backend.shifts.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                    <div class="text-truncate">{{ __('Shifts') }}</div>
+                </a>
+            </li>
+        @endcan
+</aside>
