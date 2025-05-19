@@ -10,8 +10,25 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        $permissions = Permission::paginate(10);
-        return view('backend.role-permission.permission.index', ['permissions' => $permissions]);
+        $permissions = Permission::all();
+
+        $grouped = [];
+
+        foreach ($permissions as $permission) {
+            if (str_contains($permission->name, ' ')) {
+                [$action, $module] = explode(' ', $permission->name);
+                $grouped[$action][$module] = $permission;
+            }
+        }
+
+        $actions = ['view', 'update', 'create', 'delete'];
+        $modules = collect($permissions)
+            ->map(fn($p) => explode(' ', $p->name)[1])
+            ->unique()
+            ->sort()
+            ->values();
+
+        return view('backend.role-permission.permission.index', compact('grouped', 'actions', 'modules'));
     }
 
     public function create()
@@ -33,7 +50,7 @@ class PermissionController extends Controller
             'name' => $request->name
         ]);
 
-        return redirect()->route('backend.permissions.index')->with('status','Permission Created Successfully');
+        return redirect()->route('backend.permissions.index')->with('status', 'Permission Created Successfully');
     }
 
     public function edit(Permission $permission)
@@ -47,7 +64,7 @@ class PermissionController extends Controller
             'name' => [
                 'required',
                 'string',
-                'unique:permissions,name,'.$permission->id
+                'unique:permissions,name,' . $permission->id
             ]
         ]);
 
@@ -55,13 +72,13 @@ class PermissionController extends Controller
             'name' => $request->name
         ]);
 
-        return redirect()->route('backend.permissions.index')->with('status','Permission Updated Successfully');
+        return redirect()->route('backend.permissions.index')->with('status', 'Permission Updated Successfully');
     }
 
     public function destroy($permissionId)
     {
         $permission = Permission::find($permissionId);
         $permission->delete();
-        return redirect()->route('backend.permissions.index')->with('status','Permission Deleted Successfully');
+        return redirect()->route('backend.permissions.index')->with('status', 'Permission Deleted Successfully');
     }
 }

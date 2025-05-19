@@ -12,69 +12,79 @@
                 </div>
             </div>
             <div class="card-body">
-
+                <form
+                    action="{{ $shift->exists ? route('backend.shifts.update', $shift) : route('backend.shifts.store') }}"
+                    method="POST">
+                    @csrf
+                    @if ($shift->exists)
+                        @method('PUT')
+                    @endif
+                    <div class="row">
+                        <div class="col-12 col-md-3 col-lg-3 col-xl-3">
+                            <div class="form-group">
+                                <label>{{ __('Name') }}</label>
+                                <input type="text" name="name"
+                                    class="form-control @error('name') is-invalid @enderror"
+                                    value="{{ old('name', $shift->name) }}">
+                                @error('name')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3 col-xl-3">
+                            <div class="form-group">
+                                <label>{{ __('Gender') }}</label>
+                                <select id="gender" name="gender"
+                                    class="form-control @error('gender') is-invalid @enderror">
+                                    <option value="" disabled
+                                        {{ old('gender', $shift->gender) == '' ? 'selected' : '' }}>
+                                        Select Gender
+                                    </option>
+                                    <option value="male"
+                                        {{ old('gender', $shift->gender) == 'male' ? 'selected' : '' }}>
+                                        Male
+                                    </option>
+                                    <option value="female"
+                                        {{ old('gender', $shift->gender) == 'female' ? 'selected' : '' }}>
+                                        Female
+                                    </option>
+                                </select>
+                                @error('gender')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3 col-xl-3">
+                            <div class="form-group">
+                                <label>{{ __('Start Time') }}</label>
+                                <input type="time" name="start_time"
+                                    class="form-control @error('start_time') is-invalid @enderror"
+                                    value="{{ old('start_time', $shift->start_time) }}">
+                                @error('start_time')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 col-lg-3 col-xl-3">
+                            <div class="form-group">
+                                <label>{{ __('End Time') }}</label>
+                                <input type="time" name="end_time"
+                                    class="form-control @error('end_time') is-invalid @enderror"
+                                    value="{{ old('end_time', $shift->end_time) }}">
+                                @error('end_time')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="my-3">
+                                <button type="submit"
+                                    class="btn btn-primary">{{ $shift->exists ? 'Update' : 'Create' }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
-    {{-- @push('js')
-        <script>
-            $(document).ready(function() {
-                $(document).on('submit', '#assetCreate , #assetUpdate', function(e) {
-                    e.preventDefault();
-
-                    const self = this;
-                    const {
-                        url,
-                        token,
-                        formData,
-                        button,
-                        loadingSpinner
-                    } = getFormData(this);
-
-                    let isValid = requestValidationHandler.call(self,
-                        'input[required], select[required], textarea[required]'
-                    );
-
-                    if (!isValid) {
-                        toastr.error('Please fill all required fields.');
-                        return;
-                    }
-
-                    loadingSpinner.show();
-                    button.prop('disabled', true).text('Processing...');
-
-                    $.ajax({
-                            method: "POST",
-                            url: url,
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            headers: {
-                                'X-CSRF-TOKEN': token,
-                            },
-                        })
-                        .done(function(response) {
-                            loadingSpinner.hide();
-                            button.prop('disabled', false).text('Submit');
-                            if (self.id === 'assetCreate') {
-                                $(self).trigger('reset');
-                                $(self).find('select').each(function() {
-                                    $(this).val($(this).find('option:first').val()).trigger(
-                                        'change');
-                                });
-                            }
-                            toastr.success(response.message || 'Form submitted successfully.');
-                        })
-                        .fail(function(xhr) {
-                            handleAjaxError(xhr);
-                        })
-                        .always(function() {
-                            loadingSpinner.hide();
-                            button.prop('disabled', false).text('Submit');
-                        });
-                });
-            });
-        </script>
-    @endpush --}}
 </x-app-layout>
