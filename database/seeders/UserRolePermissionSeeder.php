@@ -158,7 +158,7 @@ class UserRolePermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-            
+
             /* Payment  permissions */
 
             [
@@ -185,9 +185,9 @@ class UserRolePermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-            
+
             /* Shift permissions */
-            
+
             [
                 'name' => 'view shift',
                 'guard_name' => 'web',
@@ -212,9 +212,9 @@ class UserRolePermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-            
+
             /* Trainer permissions */
-            
+
             [
                 'name' => 'view trainer',
                 'guard_name' => 'web',
@@ -239,7 +239,7 @@ class UserRolePermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-            
+
             /* permissions dashboard */
 
             [
@@ -274,6 +274,8 @@ class UserRolePermissionSeeder extends Seeder
             'email' => 'superadmin@gmail.com',
             'password' => Hash::make('12345678'),
             'shift_id' => 1,
+            'age' => 25,
+            'gender' => 'male',
         ]);
 
         $superAdminUser->assignRole($superAdminRole);
@@ -285,6 +287,8 @@ class UserRolePermissionSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => Hash::make('12345678'),
             'shift_id' => 1,
+            'age' => 25,
+            'gender' => 'male',
         ]);
 
         $adminUser->assignRole($adminRole);
@@ -297,6 +301,8 @@ class UserRolePermissionSeeder extends Seeder
             'email' => 'staff@gmail.com',
             'password' => Hash::make('12345678'),
             'shift_id' => 1,
+            'age' => 25,
+            'gender' => 'male',
         ]);
 
         $staffUser->assignRole($staffRole);

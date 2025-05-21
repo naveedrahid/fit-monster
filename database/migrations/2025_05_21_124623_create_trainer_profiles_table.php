@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trainers', function (Blueprint $table) {
+        Schema::create('trainer_profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('address');
-            $table->date('joining_date');
-            $table->enum('gender', ['male', 'female']);
             $table->string('specialization')->nullable();
-            $table->string('experience_years')->nullable();
-            $table->softDeletes();
+            $table->integer('experience')->nullable();
+            $table->decimal('salary', 10, 2)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trainers');
+        Schema::dropIfExists('trainer_profiles');
     }
 };

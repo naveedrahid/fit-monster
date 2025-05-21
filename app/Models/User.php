@@ -47,8 +47,12 @@ class User extends Authenticatable
     public function shift(){
         return $this->belongsTo(Shift::class);
     }
+    
+    public function trainerProfile(){
+        return $this->hasOne(TrainerProfile::class);
+    }
 
-    public function trainer(){
-        return $this->hasOne(trainer::class);
+    public function clientProfile(){
+        return $this->hasOne(ClientProfile::class);
     }
 }

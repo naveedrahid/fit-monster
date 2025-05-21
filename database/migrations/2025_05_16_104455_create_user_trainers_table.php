@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('user_trainers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('trainer_id')->constrained()->onDelete('cascade');
             $table->date('assigned_on');
             $table->softDeletes();
             $table->timestamps();

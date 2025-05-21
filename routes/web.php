@@ -98,15 +98,6 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::delete('/{shift}', [ShiftController::class, 'destroy'])->middleware('permission:delete shift')->name('shifts.destroy');
     });
 
-    Route::group(['prefix' => 'trainers'], function () {
-        Route::get('/', [ShiftController::class, 'index'])->middleware('permission:view trainer')->name('trainers.index');
-        Route::get('/create', [ShiftController::class, 'create'])->middleware('permission:create trainer')->name('trainers.create');
-        Route::post('/', [ShiftController::class, 'store'])->middleware('permission:create trainer')->name('trainers.store');
-        Route::get('/{trainer}/edit', [ShiftController::class, 'edit'])->middleware('permission:update trainer')->name('trainers.edit');
-        Route::put('/{trainer}', [ShiftController::class, 'update'])->middleware('permission:update trainer')->name('trainers.update');
-        Route::delete('/{trainer}', [ShiftController::class, 'destroy'])->middleware('permission:delete trainer')->name('trainers.destroy');
-    });
-
     // // Home/Dashboard
     Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('permission:view dashboard');
 });
