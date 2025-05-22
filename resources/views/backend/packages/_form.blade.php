@@ -12,69 +12,54 @@
                 </div>
             </div>
             <div class="card-body">
-
+                <form method="POST"
+                    action="{{ $package->exists ? route('backend.packages.update', $package->id) : route('backend.packages.store') }}">
+                    @csrf
+                    @if ($package->exists)
+                        @method('PUT')
+                    @endif
+                    <div class="row">
+                        <div class="col-md-4 col-12">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">{{ __('Package Name') }}</label>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                    id="name" name="name" value="{{ old('name', $package->name ?? '') }}">
+                                @error('name')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="mb-3">
+                                <label for="price" class="form-label">{{ __('Price') }}</label>
+                                <input type="number" class="form-control @error('price') is-invalid @enderror"
+                                    id="price" name="price" value="{{ old('price', $package->price ?? '') }}">
+                                @error('price')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="mb-3">
+                                <label for="duration_days" class="form-label">{{ __('Duration') }}</label>
+                                <input type="number" class="form-control @error('duration_days') is-invalid @enderror"
+                                    id="duration_days" name="duration_days"
+                                    value="{{ old('duration_days', $package->duration_days ?? '') }}">
+                                @error('duration_days')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label for="description" class="form-label">{{ __('Description') }}</label>
+                                <textarea class="form-control" id="description" name="description">{{ old('description', $package->description ?? '') }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{{ $package->exists ? 'Update' : 'Create' }}</button>
+                </form>
             </div>
         </div>
     </div>
-
-    {{-- @push('js')
-        <script>
-            $(document).ready(function() {
-                $(document).on('submit', '#assetCreate , #assetUpdate', function(e) {
-                    e.preventDefault();
-
-                    const self = this;
-                    const {
-                        url,
-                        token,
-                        formData,
-                        button,
-                        loadingSpinner
-                    } = getFormData(this);
-
-                    let isValid = requestValidationHandler.call(self,
-                        'input[required], select[required], textarea[required]'
-                    );
-
-                    if (!isValid) {
-                        toastr.error('Please fill all required fields.');
-                        return;
-                    }
-
-                    loadingSpinner.show();
-                    button.prop('disabled', true).text('Processing...');
-
-                    $.ajax({
-                            method: "POST",
-                            url: url,
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            headers: {
-                                'X-CSRF-TOKEN': token,
-                            },
-                        })
-                        .done(function(response) {
-                            loadingSpinner.hide();
-                            button.prop('disabled', false).text('Submit');
-                            if (self.id === 'assetCreate') {
-                                $(self).trigger('reset');
-                                $(self).find('select').each(function() {
-                                    $(this).val($(this).find('option:first').val()).trigger(
-                                        'change');
-                                });
-                            }
-                            toastr.success(response.message || 'Form submitted successfully.');
-                        })
-                        .fail(function(xhr) {
-                            handleAjaxError(xhr);
-                        })
-                        .always(function() {
-                            loadingSpinner.hide();
-                            button.prop('disabled', false).text('Submit');
-                        });
-                });
-            });
-        </script>
-    @endpush --}}
 </x-app-layout>
