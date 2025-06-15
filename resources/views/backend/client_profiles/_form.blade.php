@@ -11,7 +11,7 @@
                     <a href="" class="btn btn-secondary">Back</a>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body"> 
                 <form
                     action="{{ $shift->exists ? route('backend.shifts.update', $shift) : route('backend.shifts.store') }}"
                     method="POST">
