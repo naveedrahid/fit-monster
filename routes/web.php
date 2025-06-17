@@ -10,12 +10,6 @@ use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
 Auth::routes();
 
 Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth']], function () {
