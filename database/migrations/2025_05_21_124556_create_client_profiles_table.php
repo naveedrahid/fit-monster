@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('client_profiles', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('package_id')->constrained()->onDelete('cascade');
             $table->string('height')->nullable();
             $table->string('weight')->nullable();

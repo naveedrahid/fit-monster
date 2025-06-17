@@ -44,7 +44,6 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::put('/{roleId}/give-permissions', [RoleController::class, 'givePermissionToRole'])->middleware('permission:update role');
     });
 
-
     // Users Routes
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', [UserController::class, 'index'])->middleware('permission:view user')->name('users.index');
@@ -56,14 +55,14 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/{userId}/delete', [UserController::class, 'destroy'])->middleware('permission:delete user');
     });
 
-    Route::group(['prefix' => 'expenses'], function () {
-        Route::get('/', [ExpenseController::class, 'index'])->middleware('permission:view expense')->name('expenses.index');
-        Route::get('/create', [ExpenseController::class, 'create'])->middleware('permission:create expense')->name('expenses.create');
-        Route::post('/', [ExpenseController::class, 'store'])->middleware('permission:create expense')->name('expenses.store');
-        Route::get('/{expense}/edit', [ExpenseController::class, 'edit'])->middleware('permission:update expense')->name('expenses.edit');
-        Route::put('/{expense}', [ExpenseController::class, 'update'])->middleware('permission:update expense')->name('expenses.update');
-        Route::delete('/{expense}', [ExpenseController::class, 'destroy'])->middleware('permission:delete expense')->name('expenses.destroy');
-    });
+    // Route::group(['prefix' => 'expenses'], function () {
+    //     Route::get('/', [ExpenseController::class, 'index'])->middleware('permission:view expense')->name('expenses.index');
+    //     Route::get('/create', [ExpenseController::class, 'create'])->middleware('permission:create expense')->name('expenses.create');
+    //     Route::post('/', [ExpenseController::class, 'store'])->middleware('permission:create expense')->name('expenses.store');
+    //     Route::get('/{expense}/edit', [ExpenseController::class, 'edit'])->middleware('permission:update expense')->name('expenses.edit');
+    //     Route::put('/{expense}', [ExpenseController::class, 'update'])->middleware('permission:update expense')->name('expenses.update');
+    //     Route::delete('/{expense}', [ExpenseController::class, 'destroy'])->middleware('permission:delete expense')->name('expenses.destroy');
+    // });
 
     Route::group(['prefix' => 'packages'], function () {
         Route::get('/', [PackageController::class, 'index'])->middleware('permission:view package')->name('packages.index');
@@ -74,14 +73,14 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::delete('/{package}', [PackageController::class, 'destroy'])->middleware('permission:delete package')->name('packages.destroy');
     });
 
-    Route::group(['prefix' => 'payments'], function () {
-        Route::get('/', [PaymentController::class, 'index'])->middleware('permission:view payment')->name('payments.index');
-        Route::get('/create', [PaymentController::class, 'create'])->middleware('permission:create payment')->name('payments.create');
-        Route::post('/', [PaymentController::class, 'store'])->middleware('permission:create payment')->name('payments.store');
-        Route::get('/{payment}/edit', [PaymentController::class, 'edit'])->middleware('permission:update payment')->name('payments.edit');
-        Route::put('/{payment}', [PaymentController::class, 'update'])->middleware('permission:update payment')->name('payments.update');
-        Route::delete('/{payment}', [PaymentController::class, 'destroy'])->middleware('permission:delete payment')->name('payments.destroy');
-    });
+    // Route::group(['prefix' => 'payments'], function () {
+    //     Route::get('/', [PaymentController::class, 'index'])->middleware('permission:view payment')->name('payments.index');
+    //     Route::get('/create', [PaymentController::class, 'create'])->middleware('permission:create payment')->name('payments.create');
+    //     Route::post('/', [PaymentController::class, 'store'])->middleware('permission:create payment')->name('payments.store');
+    //     Route::get('/{payment}/edit', [PaymentController::class, 'edit'])->middleware('permission:update payment')->name('payments.edit');
+    //     Route::put('/{payment}', [PaymentController::class, 'update'])->middleware('permission:update payment')->name('payments.update');
+    //     Route::delete('/{payment}', [PaymentController::class, 'destroy'])->middleware('permission:delete payment')->name('payments.destroy');
+    // });
 
     Route::group(['prefix' => 'shifts'], function () {
         Route::get('/', [ShiftController::class, 'index'])->middleware('permission:view shift')->name('shifts.index');
