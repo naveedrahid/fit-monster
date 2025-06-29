@@ -3,7 +3,8 @@
         <a href="javascript:void(0);" class="app-brand-link text-decoration-none">
             <span class="app-brand-logo demo">
                 <span class="text-primary">
-                    <img src="{{ asset('admin/img/logo.jpg') }}"  class="img-fluid" alt="" style="height: 70px;object-fit: cover;width: 240px;">
+                    <img src="{{ asset('admin/img/logo.jpg') }}" class="img-fluid" alt=""
+                        style="height: 70px;object-fit: cover;width: 240px;">
                 </span>
             </span>
         </a>
@@ -27,9 +28,8 @@
         </li>
 
         <!-- Roles & Permissions -->
-        @if (auth()->user()->can('view role') || auth()->user()->can('view permission') || auth()->user()->can('view user'))
-            <li
-                class="menu-item {{ request()->is('roles*') || request()->is('permissions*') || request()->is('users*') ? 'active open' : '' }}">
+        @if (auth()->user()->can('view role') || auth()->user()->can('view permission'))
+            <li class="menu-item {{ request()->is('roles*') || request()->is('permissions*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-lock"></i>
                     <div class="text-truncate">Roles & Permissions</div>
@@ -51,21 +51,50 @@
                         </li>
                     @endcan
 
-                    @can('view user')
-                        <li class="menu-item {{ request()->is('users*') ? 'active' : '' }}">
-                            <a href="{{ route('users.index') }}" class="menu-link">
-                                <div class="text-truncate">Users</div>
-                            </a>
-                        </li>
-                    @endcan
                 </ul>
             </li>
         @endif
 
+        @can(['view package', 'view addon'])
+            <li class="menu-item {{ request()->is('packages*') || request()->is('addons*') ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    {{-- <i class=" bx bx-lock"></i> --}}
+                    <i class="menu-icon tf-icons fas fa-cubes"></i>
+                    <div class="text-truncate">Packages & Addons</div>
+                </a>
+                <ul class="menu-sub">
+                    @can('view package')
+                        <li class="menu-item {{ request()->is('packages*') ? 'active' : '' }}">
+                            <a href="{{ route('packages.index') }}" class="menu-link">
+                                <div class="text-truncate">Packages</div>
+                            </a>
+                        </li>
+                    @endcan
+
+                    @can('view addon')
+                        <li class="menu-item {{ request()->is('addons*') ? 'active' : '' }}">
+                            <a href="{{ route('addons.index') }}" class="menu-link">
+                                <div class="text-truncate">Addons</div>
+                            </a>
+                        </li>
+                    @endcan
+
+                </ul>
+            </li>
+        @endcan
+
+        @can('view user')
+            <li class="menu-item {{ request()->is('users*') ? 'active open' : '' }}">
+                <a href="{{ route('users.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons fas fa-users"></i>
+                    <div class="text-truncate">Users</div>
+                </a>
+            </li>
+        @endcan
         @can('view shift')
             <li class="menu-item {{ request()->is('shifts*') ? 'active open' : '' }}">
                 <a href="{{ route('shifts.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                    <i class="menu-icon tf-icons fas fa-retweet"></i>
                     <div class="text-truncate">{{ __('Shifts') }}</div>
                 </a>
             </li>
