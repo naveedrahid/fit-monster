@@ -5,11 +5,11 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>Create User
-                            <a href="{{ route('backend.users.index') }}" class="btn btn-danger float-end">Back</a>
+                            <a href="{{ route('users.index') }}" class="btn btn-danger float-end">Back</a>
                         </h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('backend.users.store') }}" method="POST">
+                        <form action="{{ route('users.store') }}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-12 col-md-4 col-lg-4 col-xl-4">

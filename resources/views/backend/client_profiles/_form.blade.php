@@ -13,7 +13,7 @@
             </div>
             <div class="card-body"> 
                 <form
-                    action="{{ $shift->exists ? route('backend.shifts.update', $shift) : route('backend.shifts.store') }}"
+                    action="{{ $shift->exists ? route('shifts.update', $shift) : route('shifts.store') }}"
                     method="POST">
                     @csrf
                     @if ($shift->exists)

@@ -240,6 +240,33 @@ class UserRolePermissionSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
 
+            /* Trainer permissions */
+
+            [
+                'name' => 'view addon',
+                'guard_name' => 'web',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'create addon',
+                'guard_name' => 'web',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'update addon',
+                'guard_name' => 'web',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'delete addon',
+                'guard_name' => 'web',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+
             /* permissions dashboard */
 
             [
@@ -276,6 +303,8 @@ class UserRolePermissionSeeder extends Seeder
             'shift_id' => 1,
             'age' => 25,
             'gender' => 'male',
+            'phone' => '0315000000',
+            'emergency_contact' => '0320000000'
         ]);
 
         $superAdminUser->assignRole($superAdminRole);
@@ -289,6 +318,8 @@ class UserRolePermissionSeeder extends Seeder
             'shift_id' => 1,
             'age' => 25,
             'gender' => 'male',
+            'phone' => '0315000000',
+            'emergency_contact' => '0320000000'
         ]);
 
         $adminUser->assignRole($adminRole);
@@ -303,6 +334,8 @@ class UserRolePermissionSeeder extends Seeder
             'shift_id' => 1,
             'age' => 25,
             'gender' => 'male',
+            'phone' => '0315000000',
+            'emergency_contact' => '0320000000'
         ]);
 
         $staffUser->assignRole($staffRole);

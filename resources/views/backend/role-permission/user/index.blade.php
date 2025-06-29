@@ -11,7 +11,7 @@
                     <div class="card-header">
                         <h4>Users
                             @can('create user')
-                                <a href="{{ route('backend.users.create') }}" class="btn btn-primary float-end">Add User</a>
+                                <a href="{{ route('users.create') }}" class="btn btn-primary float-end">Add User</a>
                             @endcan
                         </h4>
                     </div>
@@ -42,11 +42,11 @@
                                         </td>
                                         <td>
                                             @can('update user')
-                                                <a href="{{ route('backend.users.edit', $user->id) }}" class="btn btn-success">Edit</a>
+                                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-success">Edit</a>
                                             @endcan
 
                                             @can('delete user')
-                                                <a href="{{ route('backend.users.destroy', $user->id) }}"
+                                                <a href="{{ route('users.destroy', $user->id) }}"
                                                     class="btn btn-danger mx-2">Delete</a>
                                             @endcan
                                         </td>

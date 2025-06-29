@@ -14,11 +14,11 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>Edit Permission
-                            <a href="{{ url('backend/permissions') }}" class="btn btn-danger float-end">Back</a>
+                            <a href="{{ url('permissions') }}" class="btn btn-danger float-end">Back</a>
                         </h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ url('backend/permissions/'.$permission->id) }}" method="POST">
+                        <form action="{{ url('permissions/'.$permission->id) }}" method="POST">
                             @csrf
                             @method('PUT')
 

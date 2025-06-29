@@ -11,7 +11,7 @@
                     <div class="card-header">
                         <h4>Permissions
                             @can('create permission')
-                                <a href="{{ url('backend/permissions/create') }}" class="btn btn-primary float-end">Add
+                                <a href="{{ url('permissions/create') }}" class="btn btn-primary float-end">Add
                                     Permission</a>
                             @endcan
                         </h4>
@@ -33,10 +33,10 @@
                                                <h6 class="permissionName text-center">{{ $grouped[$action][$module]->name }}</h6> 
                                                 @can($action . ' permission')
                                                 <div class="permissionBtn">
-                                                    <a href="{{ url('backend/permissions/' . $grouped[$action][$module]->id . '/edit') }}"
+                                                    <a href="{{ url('permissions/' . $grouped[$action][$module]->id . '/edit') }}"
                                                         class="btn btn-sm btn-success">
                                                         <i class="icon-base bx bx-edit-alt text-white"></i></a>
-                                                    <a href="{{ url('backend/permissions/' . $grouped[$action][$module]->id . '/delete') }}"
+                                                    <a href="{{ url('permissions/' . $grouped[$action][$module]->id . '/delete') }}"
                                                         class="btn btn-sm btn-danger">
                                                         <i class="icon-base bx bx-trash text-white"></i></a>
                                                 </div>

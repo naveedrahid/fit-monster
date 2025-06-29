@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\AddonController;
 use App\Http\Controllers\Backend\ExpenseController;
 use App\Http\Controllers\Backend\PackageController;
 use App\Http\Controllers\Backend\PaymentController;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/logout', function () {
         Auth::logout();
@@ -89,6 +90,15 @@ Route::group(['prefix' => 'backend', 'as' => 'backend.', 'middleware' => ['auth'
         Route::get('/{shift}/edit', [ShiftController::class, 'edit'])->middleware('permission:update shift')->name('shifts.edit');
         Route::put('/{shift}', [ShiftController::class, 'update'])->middleware('permission:update shift')->name('shifts.update');
         Route::delete('/{shift}', [ShiftController::class, 'destroy'])->middleware('permission:delete shift')->name('shifts.destroy');
+    });
+
+    Route::group(['prefix' => 'addons'], function () {
+        Route::get('/', [AddonController::class, 'index'])->middleware('permission:view addon')->name('addons.index');
+        Route::get('/create', [AddonController::class, 'create'])->middleware('permission:create addon')->name('addons.create');
+        Route::post('/', [AddonController::class, 'store'])->middleware('permission:create addon')->name('addons.store');
+        Route::get('/{addon}/edit', [AddonController::class, 'edit'])->middleware('permission:update addon')->name('addons.edit');
+        Route::put('/{addon}', [AddonController::class, 'update'])->middleware('permission:update addon')->name('addons.update');
+        Route::delete('/{addon}', [AddonController::class, 'destroy'])->middleware('permission:delete addon')->name('addons.destroy');
     });
 
     // // Home/Dashboard

@@ -34,7 +34,7 @@ class PackageController extends Controller
         $package->price = $request->price;
         $package->duration_days = $request->duration_days;
         $package->save();
-        return redirect()->route('backend.packages.index')->with('success', 'Package created successfully');
+        return redirect()->route('packages.index')->with('success', 'Package created successfully');
     }
 
     public function edit(Package $package)
@@ -56,6 +56,6 @@ class PackageController extends Controller
             'price' => $request->price,
             'duration_days' => $request->duration_days,
         ]);
-        return redirect()->route('backend.packages.index')->with('success', 'Package updated successfully');
+        return redirect()->route('packages.index')->with('success', 'Package updated successfully');
     }
 }

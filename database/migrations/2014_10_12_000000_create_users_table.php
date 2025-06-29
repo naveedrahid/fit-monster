@@ -20,6 +20,8 @@ return new class extends Migration
             $table->enum('gender', ['male', 'female']);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('phone');
+            $table->string('emergency_contact')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

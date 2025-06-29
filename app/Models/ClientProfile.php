@@ -12,7 +12,20 @@ class ClientProfile extends Model
 
     protected $guarded = ['id'];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
+    }
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class);
+    }
+
+    public function addons()
+    {
+        return $this->belongsToMany(Addon::class, 'client_profile_addons')
+            ->withPivot('is_active')
+            ->withTimestamps();
     }
 }

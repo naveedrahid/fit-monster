@@ -11,16 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('client_profiles', function (Blueprint $table) {
+        Schema::create('addon_package', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('package_id')->constrained()->onDelete('cascade');
-            $table->string('height')->nullable();
-            $table->string('weight')->nullable();
-            $table->string('goal')->nullable();
-            $table->enum('activity_level', ['low', 'moderate', 'high'])->nullable();
+            $table->foreignId('addon_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -29,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('client_profiles');
+        Schema::dropIfExists('addon_package');
     }
 };

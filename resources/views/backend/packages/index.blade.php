@@ -36,11 +36,11 @@
                                 <td>{{ $package->description ?? '' }}</td>
                                 <td>
                                     <a class="btn btn-icon btn-primary"
-                                        href="{{ route('backend.packages.edit', $package->id) }}">
+                                        href="{{ route('packages.edit', $package->id) }}">
                                         <i class="icon-base bx bx-edit-alt text-white"></i>
                                     </a>
                                     <a class="btn btn-icon btn-danger deleteAsset"
-                                        href="{{ route('backend.packages.destroy', $package->id) }}">
+                                        href="{{ route('packages.destroy', $package->id) }}">
                                         <i class="icon-base bx bx-trash text-white"></i>
                                     </a>
                                 </td>

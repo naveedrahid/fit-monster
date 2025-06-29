@@ -32,7 +32,7 @@ class ShiftController extends Controller
 
         Shift::create($validatedData);
 
-        return redirect()->route('backend.shifts.index')->with('success', 'Shift created successfully');
+        return redirect()->route('shifts.index')->with('success', 'Shift created successfully');
     }
 
     public function update(Request $request, Shift $shift)
@@ -46,13 +46,13 @@ class ShiftController extends Controller
 
         $shift->update($validatedData);
 
-        return redirect()->route('backend.shifts.index')->with('success', 'Shift updated successfully');
+        return redirect()->route('shifts.index')->with('success', 'Shift updated successfully');
     }
 
     public function destroy(Shift $shift)
     {
         $shift->delete();
-        return redirect()->route('backend.shifts.index')->with('success', 'Shift deleted successfully');
+        return redirect()->route('shifts.index')->with('success', 'Shift deleted successfully');
     }
 
 }

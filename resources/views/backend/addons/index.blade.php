@@ -1,50 +1,45 @@
-@section('title', 'Shift')
+@section('title', 'Addon')
 <x-app-layout>
     <div class="container-xxl flex-grow-1 container-p-y">
-        @if (session()->has('success'))
-            <div class="alert alert-success alert-dismissible">
-                {{ session('success') }}
-            </div>
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
         @endif
         <div class="card position-relative">
             <div id="loadingSpinner" style="display: none; text-align: center;">
                 <i class="fas fa-spinner fa-spin fa-3x"></i>
             </div>
             <div class="d-flex align-items-center justify-content-between">
-                <h5 class="card-header">{{ __('Manage Shift') }}</h5>
+                <h5 class="card-header">{{ __('Manage Addon') }}</h5>
                 <div class="card-header">
-                    <a href="{{ route('shifts.create') }}" class="btn btn-secondary">{{ __('Add Shift') }}</a>
+                    <a href="{{ route('addons.create') }}" class="btn btn-secondary">{{ __('Add Addon') }}</a>
                 </div>
             </div>
-
             <div class="table-responsive text-nowrap">
                 <table class="table table-striped">
                     <thead class="table-light">
                         <tr>
-                            <th>{{ __('Name') }}</th>
-                            <th>{{ __('Gender') }}</th>
-                            <th>{{ __('Start Time') }}</th>
-                            <th>{{ __('End Time') }}</th>
+                            <th>{{ __('Addon Name') }}</th>
+                            <th>{{ __('Description') }}</th>
+                            <th>{{ __('Price') }}</th>
                             <th>{{ __('Action') }}</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                        @forelse ($shifts as $shift)
+                        @forelse ($addons as $addon)
                             <tr>
-                                <td>{{ $shift->name ?? '' }}</td>
-                                <td>{{ $shift->gender ?? '' }}</td>
-                                <td>{{ date('h:i A', strtotime($shift->start_time)) ?? '' }}</td>
-                                <td>{{ date('h:i A', strtotime($shift->end_time)) ?? '' }}</td>
+                                <td>{{ $addon->name }}</td>
+                                <td>{{ $addon->description }}</td>
+                                <td>{{ $addon->price }}</td>
                                 <td>
-                                    <a class="btn btn-icon btn-primary"
-                                        href="{{ route('shifts.edit', $shift->id) }}">
+                                    <a class="btn btn-icon btn-primary" href="{{ route('addons.edit', $addon->id) }}">
                                         <i class="icon-base bx bx-edit-alt text-white"></i>
                                     </a>
-                                    <form action="{{ route('shifts.destroy', $shift->id) }}" method="POST"
-                                        style="display:inline-block;" onsubmit="return confirm('Are you sure?')">
+                                    <form action="{{ route('addons.destroy', $addon) }}" method="POST"
+                                        style="display:inline-block;"
+                                        onsubmit="return confirm('Are you sure you want to delete this addon?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-icon btn-danger">
+                                        <button type="submit" class="btn btn-icon btn-danger deleteAsset">
                                             <i class="icon-base bx bx-trash text-white"></i>
                                         </button>
                                     </form>
@@ -52,11 +47,14 @@
                             </tr>
                         @empty
                             <tr>
-                                <td class="text-center" colspan="9">{{ __('No Shift Found') }}</td>
+                                <td class="text-center" colspan="9">{{ __('No Addon Found') }}</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-center mt-2">
+                    {{ $addons->links('pagination::bootstrap-4') }}
+                </div>
             </div>
         </div>
     </div>

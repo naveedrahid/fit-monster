@@ -14,11 +14,11 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>Create Role
-                            <a href="{{ url('backend/roles') }}" class="btn btn-danger float-end">Back</a>
+                            <a href="{{ url('roles') }}" class="btn btn-danger float-end">Back</a>
                         </h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ url('backend/roles') }}" method="POST">
+                        <form action="{{ url('roles') }}" method="POST">
                             @csrf
 
                             <div class="mb-3">

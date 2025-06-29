@@ -8,12 +8,12 @@
             <div class="d-flex align-items-center justify-content-between">
                 <h5 class="card-header">{{ __('Create New Shift') }}</h5>
                 <div class="card-header">
-                    <a href="{{route('backend.shifts.index')}}" class="btn btn-danger float-end">Back</a>
+                    <a href="{{route('shifts.index')}}" class="btn btn-danger float-end">Back</a>
                 </div>
             </div>
             <div class="card-body">
                 <form
-                    action="{{ $shift->exists ? route('backend.shifts.update', $shift) : route('backend.shifts.store') }}"
+                    action="{{ $shift->exists ? route('shifts.update', $shift) : route('shifts.store') }}"
                     method="POST">
                     @csrf
                     @if ($shift->exists)

@@ -13,7 +13,7 @@
             </div>
             <div class="card-body">
                 <form method="POST"
-                    action="{{ $package->exists ? route('backend.packages.update', $package->id) : route('backend.packages.store') }}">
+                    action="{{ $package->exists ? route('packages.update', $package->id) : route('packages.store') }}">
                     @csrf
                     @if ($package->exists)
                         @method('PUT')

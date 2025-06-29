@@ -101,7 +101,7 @@ class UserController extends Controller
 
             DB::commit();
 
-            return redirect()->route('backend.users.index')->with('status', 'User created successfully with profile');
+            return redirect()->route('users.index')->with('status', 'User created successfully with profile');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed to create user: ' . $e->getMessage()]);
@@ -161,7 +161,7 @@ class UserController extends Controller
     //         // Profile creation yahan hoga baad mein
     //         DB::commit();
 
-    //         return redirect()->route('backend.users.index')->with('status', 'User created successfully with roles');
+    //         return redirect()->route('users.index')->with('status', 'User created successfully with roles');
     //     } catch (\Throwable $e) {
     //         DB::rollBack();
     //         Log::error('User creation failed', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
@@ -208,7 +208,7 @@ class UserController extends Controller
         $user->update($data);
         $user->syncRoles($request->roles);
 
-        return redirect()->route('backend.users.index')->with('status', 'User Updated Successfully with roles');
+        return redirect()->route('users.index')->with('status', 'User Updated Successfully with roles');
     }
 
     public function destroy($userId)
@@ -216,6 +216,6 @@ class UserController extends Controller
         $user = User::findOrFail($userId);
         $user->delete();
 
-        return redirect()->route('backend.users.index')->with('status', 'User Delete Successfully');
+        return redirect()->route('users.index')->with('status', 'User Delete Successfully');
     }
 }

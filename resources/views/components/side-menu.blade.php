@@ -19,8 +19,8 @@
 
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
-        <li class="menu-item {{ request()->is('backend') ? 'active open' : '' }}">
-            <a href="{{ route('backend.home') }}" class="menu-link">
+        <li class="menu-item {{ request()->is('/') ? 'active open' : '' }}">
+            <a href="{{ route('home') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-smile"></i>
                 <div class="text-truncate">Dashboard</div>
             </a>
@@ -29,31 +29,31 @@
         <!-- Roles & Permissions -->
         @if (auth()->user()->can('view role') || auth()->user()->can('view permission') || auth()->user()->can('view user'))
             <li
-                class="menu-item {{ request()->is('backend/roles*') || request()->is('backend/permissions*') || request()->is('backend/users*') ? 'active open' : '' }}">
+                class="menu-item {{ request()->is('roles*') || request()->is('permissions*') || request()->is('users*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-lock"></i>
                     <div class="text-truncate">Roles & Permissions</div>
                 </a>
                 <ul class="menu-sub">
                     @can('view role')
-                        <li class="menu-item {{ request()->is('backend/roles*') ? 'active' : '' }}">
-                            <a href="{{ route('backend.roles.index') }}" class="menu-link">
+                        <li class="menu-item {{ request()->is('roles*') ? 'active' : '' }}">
+                            <a href="{{ route('roles.index') }}" class="menu-link">
                                 <div class="text-truncate">Roles</div>
                             </a>
                         </li>
                     @endcan
 
                     @can('view permission')
-                        <li class="menu-item {{ request()->is('backend/permissions*') ? 'active' : '' }}">
-                            <a href="{{ route('backend.permissions.index') }}" class="menu-link">
+                        <li class="menu-item {{ request()->is('permissions*') ? 'active' : '' }}">
+                            <a href="{{ route('permissions.index') }}" class="menu-link">
                                 <div class="text-truncate">Permissions</div>
                             </a>
                         </li>
                     @endcan
 
                     @can('view user')
-                        <li class="menu-item {{ request()->is('backend/users*') ? 'active' : '' }}">
-                            <a href="{{ route('backend.users.index') }}" class="menu-link">
+                        <li class="menu-item {{ request()->is('users*') ? 'active' : '' }}">
+                            <a href="{{ route('users.index') }}" class="menu-link">
                                 <div class="text-truncate">Users</div>
                             </a>
                         </li>
@@ -63,8 +63,8 @@
         @endif
 
         @can('view shift')
-            <li class="menu-item {{ request()->is('backend/shifts*') ? 'active open' : '' }}">
-                <a href="{{ route('backend.shifts.index') }}" class="menu-link">
+            <li class="menu-item {{ request()->is('shifts*') ? 'active open' : '' }}">
+                <a href="{{ route('shifts.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-home-smile"></i>
                     <div class="text-truncate">{{ __('Shifts') }}</div>
                 </a>
