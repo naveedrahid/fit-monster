@@ -14,7 +14,7 @@
                             <div class="row">
                                 <div class="col-12 col-md-4 col-lg-4 col-xl-4">
                                     <div class="mb-3">
-                                        <label for="">Name</label>
+                                        <label>Name</label>
                                         <input type="text" name="name"
                                             class="form-control @error('name') is-invalid @enderror"
                                             value="{{ old('name') }}" />
@@ -25,8 +25,8 @@
                                 </div>
                                 <div class="col-12 col-md-4 col-lg-4 col-xl-4">
                                     <div class="mb-3">
-                                        <label for=""> Email</label>
-                                        <input type="email" name=" email"
+                                        <label> Email</label>
+                                        <input type="email" name="email"
                                             class="form-control @error('email') is-invalid @enderror"
                                             value="{{ old('email') }}" />
                                         @error('email')
@@ -36,8 +36,8 @@
                                 </div>
                                 <div class="col-12 col-md-4 col-lg-4 col-xl-4">
                                     <div class="mb-3">
-                                        <label for="">Password</label>
-                                        <input type="text" name="password"
+                                        <label>Password</label>
+                                        <input type="password" name="password"
                                             class="form-control @error('password') is-invalid @enderror"
                                             value="{{ old('password') }}" />
                                         @error('password')
@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="col-12 col-md-4 col-lg-4 col-xl-4">
                                     <div class="mb-3">
-                                        <label for="">Age</label>
+                                        <label>Age</label>
                                         <input type="number" name="age"
                                             class="form-control @error('age') is-invalid @enderror"
                                             value="{{ old('age') }}" />
@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="col-12 col-md-4 col-lg-4 col-xl-4">
                                     <div class="mb-3">
-                                        <label for="">Gender</label>
+                                        <label>Gender</label>
                                         <select name="gender"
                                             class="form-control @error('gender') is-invalid @enderror">
                                             <option value="" disabled {{ old('gender') ? '' : 'selected' }}>
@@ -95,7 +95,7 @@
                                 </div>
                                 <div class="col-12 col-md-4 col-lg-4 col-xl-4">
                                     <div class="mb-3">
-                                        <label for="">Roles</label>
+                                        <label>Roles</label>
                                         <select name="roles[]" class="form-control @error('roles') is-invalid @enderror"
                                             multiple>
                                             <option value="">Select Role</option>
@@ -104,6 +104,28 @@
                                             @endforeach
                                         </select>
                                         @error('roles')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                    <div class="mb-3">
+                                        <label>Phone</label>
+                                        <input type="tel" name="phone"
+                                            class="form-control @error('phone') is-invalid @enderror"
+                                            value="{{ old('phone') }}" />
+                                        @error('phone')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                    <div class="mb-3">
+                                        <label>Emergency Contact (Optional)</label>
+                                        <input type="tel" name="emergency_contact"
+                                            class="form-control @error('emergency_contact') is-invalid @enderror"
+                                            value="{{ old('emergency_contact') }}" />
+                                        @error('emergency_contact')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
@@ -135,22 +157,58 @@
                                                 <div class="row">
                                                     <div class="col-12 col-md-4 col-lg-4 col-xl-4">
                                                         <div class="form-group">
+                                                            <label>Choose Plan Type</label><br>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="plan_type" value="default"
+                                                                    id="plan_default" checked>
+                                                                <label class="form-check-label"
+                                                                    for="plan_default">Default Package</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="plan_type" value="custom" id="plan_custom">
+                                                                <label class="form-check-label"
+                                                                    for="plan_custom">Custom Package</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="plan_type" value="addon_only"
+                                                                    id="plan_addon_only">
+                                                                <label class="form-check-label"
+                                                                    for="plan_addon_only">Only Addons</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                                        <div class="form-group package-select">
                                                             <label>Package</label>
-                                                            <select name="package_id"
-                                                                class="form-control @error('package_id') is-invalid @enderror">
-                                                                <option value="" disabled
-                                                                    {{ old('package_id') ? '' : 'selected' }}>
-                                                                    Select Package</option>
+                                                            <select name="package_id" id="package_id"
+                                                                class="form-control">
+                                                                <option value="">Select Package</option>
                                                                 @foreach ($packages as $package)
-                                                                    <option value="{{ $package->id }}"
-                                                                        {{ old('package_id') == $package->id ? 'selected' : '' }}>
-                                                                        {{ $package->name }}
-                                                                    </option>
+                                                                    <option value="{{ $package->id }}">
+                                                                        {{ $package->name }}</option>
                                                                 @endforeach
                                                             </select>
                                                             @error('package_id')
                                                                 <small class="text-danger">{{ $message }}</small>
                                                             @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                                        <div class="form-group addon-checkboxes mt-3"
+                                                            style="display: none;">
+                                                            <label>Select Addons</label>
+                                                            <div class="d-flex flex-wrap gap-2">
+                                                                @foreach ($addons as $addon)
+                                                                    <label class="btn btn-outline-primary">
+                                                                        <input type="checkbox" name="addons[]"
+                                                                            value="{{ $addon->id }}"
+                                                                            autocomplete="off"> {{ $addon->name }}
+                                                                    </label>
+                                                                @endforeach
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-12 col-md-4 col-lg-4 col-xl-4">
@@ -248,6 +306,69 @@
                 $('#trainer-tab').on('click', function() {
                     $('#userType').val('trainer');
                 });
+            });
+        </script>
+        <script>
+            const packageAddons = @json($packageAddons);
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const planRadios = document.querySelectorAll('input[name="plan_type"]');
+                const packageSelectWrapper = document.querySelector('.package-select');
+                const addonCheckboxes = document.querySelector('.addon-checkboxes');
+                const packageSelect = document.getElementById('package_id');
+
+                const toggleViews = () => {
+                    const selectedPlan = document.querySelector('input[name="plan_type"]:checked').value;
+
+                    if (selectedPlan === 'default') {
+                        packageSelectWrapper.style.display = 'block';
+                        addonCheckboxes.style.display = 'none';
+                        packageSelect.removeAttribute('disabled');
+                        unselectAllAddons();
+                    } else if (selectedPlan === 'custom') {
+                        packageSelectWrapper.style.display = 'block';
+                        addonCheckboxes.style.display = 'block';
+                        packageSelect.removeAttribute('disabled');
+                        autoSelectPackageAddons();
+                    } else if (selectedPlan === 'addon_only') {
+                        packageSelectWrapper.style.display = 'none';
+                        addonCheckboxes.style.display = 'block';
+                        packageSelect.setAttribute('disabled', 'disabled');
+                        packageSelect.value = '';
+                        unselectAllAddons();
+                    }
+                };
+
+                const unselectAllAddons = () => {
+                    document.querySelectorAll('.addon-checkboxes input[type="checkbox"]').forEach(cb => {
+                        cb.checked = false;
+                    });
+                };
+
+                const autoSelectPackageAddons = () => {
+                    unselectAllAddons();
+                    const packageId = packageSelect.value;
+                    const addonsForPackage = packageAddons[packageId] || [];
+
+                    addonsForPackage.forEach(id => {
+                        const checkbox = document.querySelector(`input[name="addons[]"][value="${id}"]`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                };
+
+                planRadios.forEach(radio => {
+                    radio.addEventListener('change', toggleViews);
+                });
+
+                packageSelect.addEventListener('change', function() {
+                    const selectedPlan = document.querySelector('input[name="plan_type"]:checked').value;
+                    if (selectedPlan === 'custom') {
+                        autoSelectPackageAddons();
+                    }
+                });
+
+                toggleViews();
             });
         </script>
     @endpush

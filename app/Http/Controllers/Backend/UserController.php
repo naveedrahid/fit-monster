@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Addon;
 use App\Models\ClientProfile;
 use App\Models\Package;
 use App\Models\Shift;
@@ -29,10 +30,13 @@ class UserController extends Controller
         $roles = Role::pluck('name', 'name')->all();
         $shifts = Shift::all();
         $packages = Package::all();
+        $addons = Addon::all();
+        $packageAddons = Package::with('addons')->get()->mapWithKeys(function ($package) {
+            return [$package->id => $package->addons->pluck('id')->toArray()];
+        });
 
-        return view('backend.role-permission.user.create', compact('roles', 'shifts', 'packages'));
+        return view('backend.role-permission.user.create', compact('roles', 'shifts', 'packages', 'addons', 'packageAddons'));
     }
-
 
     public function store(Request $request)
     {
@@ -45,6 +49,8 @@ class UserController extends Controller
             'password' => 'required|string|min:8|max:20',
             'roles' => 'required',
             'type' => ['required', Rule::in(['client', 'trainer'])],
+            'phone' => 'required|string|max:15',
+            'emergency_contact' => 'nullable|string|max:15',
         ];
 
         if ($request->type === 'trainer') {
@@ -56,11 +62,20 @@ class UserController extends Controller
         }
 
         if ($request->type === 'client') {
+            $rules['plan_type'] = ['required', Rule::in(['default', 'custom', 'addon_only'])];
+
+            if (in_array($request->plan_type, ['default', 'custom'])) {
+                $rules['package_id'] = 'required|exists:packages,id';
+            } else {
+                $rules['package_id'] = 'nullable';
+            }
+
             $rules = array_merge($rules, [
-                'package_id' => 'required|exists:packages,id',
                 'height' => 'required|numeric|min:0',
                 'weight' => 'required|numeric|min:0',
                 'goal' => 'required|string|max:255',
+                'addons' => 'nullable|array',
+                'addons.*' => 'exists:addons,id',
             ]);
         }
 
@@ -76,19 +91,45 @@ class UserController extends Controller
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'shift_id' => $validated['shift_id'],
+                'phone' => $validated['phone'],
+                'emergency_contact' => $validated['emergency_contact'] ?? null,
             ]);
 
-            $user->syncRoles($request->roles);
-            // dd($user);
+            $user->syncRoles($validated['roles']);
 
             if ($validated['type'] === 'client') {
-                $user->clientProfile()->create([
-                    'package_id' => $validated['package_id'],
+                $clientProfile = $user->clientProfile()->create([
+                    'package_id' => $validated['package_id'] ?? null,
                     'height' => $validated['height'],
                     'weight' => $validated['weight'],
                     'goal' => $validated['goal'],
                 ]);
+
+                $addonIds = [];
+
+                if ($validated['plan_type'] === 'default') {
+                    $package = Package::with('addons')->find($validated['package_id']);
+                    $addonIds = $package ? $package->addons->pluck('id')->toArray() : [];
+                } elseif (!empty($validated['addons'])) {
+                    $addonIds = $validated['addons'];
+                }
+
+                if (!empty($addonIds)) {
+                    $addonData = collect($addonIds)->map(function ($addonId) use ($clientProfile, $validated) {
+                        return [
+                            'client_profile_id' => $clientProfile->id,
+                            'package_id' => $validated['package_id'] ?? null,
+                            'addon_id' => $addonId,
+                            'is_active' => true,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    })->toArray();
+
+                    DB::table('client_profile_addons')->insert($addonData);
+                }
             }
+
 
             if ($validated['type'] === 'trainer') {
                 $user->trainerProfile()->create([
@@ -98,76 +139,15 @@ class UserController extends Controller
                 ]);
             }
 
-
             DB::commit();
 
             return redirect()->route('users.index')->with('status', 'User created successfully with profile');
         } catch (\Exception $e) {
             DB::rollBack();
+            // dd('Exception caught: ', $e->getMessage(), $e->getTraceAsString());
             return back()->withErrors(['error' => 'Failed to create user: ' . $e->getMessage()]);
         }
     }
-
-    // public function store(Request $request)
-    // {
-    //     DB::beginTransaction();
-
-    //     try {
-    //         $rules = [
-    //             'shift_id' => 'required|exists:shifts,id',
-    //             'name' => 'required|string|max:255',
-    //             'age' => 'required|numeric|min:18|max:60',
-    //             'gender' => 'required|string|in:male,female',
-    //             'email' => 'required|email|max:255|unique:users,email',
-    //             'password' => 'required|string|min:8|max:20',
-    //             'roles' => 'required',
-    //             'type' => ['required', Rule::in(['client', 'trainer'])],
-    //         ];
-
-    //         if ($request->type === 'trainer') {
-    //             $rules = array_merge($rules, [
-    //                 'specialization' => 'required|string|max:255',
-    //                 'experience' => 'required|integer|min:0',
-    //                 'salary' => 'required|numeric|min:0',
-    //             ]);
-    //         }
-
-    //         if ($request->type === 'client') {
-    //             $rules = array_merge($rules, [
-    //                 'package_id' => 'required|exists:packages,id',
-    //                 'height' => 'required|numeric|min:0',
-    //                 'weight' => 'required|numeric|min:0',
-    //                 'goal' => 'required|string|max:255',
-    //             ]);
-    //         }
-
-    //         $validated = $request->validate($rules);
-
-    //         Log::info('Validation Passed', $validated);
-
-    //         $user = User::create([
-    //             'name' => $validated['name'],
-    //             'age' => $validated['age'],
-    //             'gender' => $validated['gender'],
-    //             'email' => $validated['email'],
-    //             'password' => Hash::make($validated['password']),
-    //             'shift_id' => $validated['shift_id'],
-    //         ]);
-
-    //         Log::info('User Created', ['user' => $user]);
-
-    //         $user->syncRoles($validated['roles']);
-
-    //         // Profile creation yahan hoga baad mein
-    //         DB::commit();
-
-    //         return redirect()->route('users.index')->with('status', 'User created successfully with roles');
-    //     } catch (\Throwable $e) {
-    //         DB::rollBack();
-    //         Log::error('User creation failed', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-    //         return back()->withErrors(['error' => 'Something went wrong.'])->withInput();
-    //     }
-    // }
 
     public function edit(User $user)
     {

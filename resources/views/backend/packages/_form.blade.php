@@ -52,14 +52,64 @@
                         </div>
                         <div class="col-12">
                             <div class="mb-3">
-                                <label for="description" class="form-label">{{ __('Description') }}</label>
-                                <textarea class="form-control" id="description" name="description">{{ old('description', $package->description ?? '') }}</textarea>
+                                <label><strong>Select Addons</strong></label>
+                                <div class="d-flex flex-wrap">
+                                    @if (!isset($addons) || $addons->isEmpty())
+                                        <p class="text-muted text-danger">Please create addons first. (Required)</p> 
+                                    @endif
+                                    @foreach ($addons as $addon)
+                                        @php $addonId = 'addon_'.$addon->id; @endphp
+                                        <input type="checkbox" class="addon-checkbox" id="{{ $addonId }}"
+                                            name="addons[]" value="{{ $addon->id }}"
+                                            {{ isset($selectedAddons) && in_array($addon->id, $selectedAddons) ? 'checked' : '' }}>
+                                        <label class="addon-label" for="{{ $addonId }}">
+                                            {{ $addon->name }} ({{ $addon->price }})
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @error('addons')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">{{ $package->exists ? 'Update' : 'Create' }}</button>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="description" class="form-label">{{ __('Description') }}</label>
+                            <textarea class="form-control" id="description" name="description">{{ old('description', $package->description ?? '') }}</textarea>
+                        </div>
+                    </div>
+                    <button type="submit"
+                        class="btn btn-primary">{{ $package->exists ? 'Update' : 'Create' }}</button>
                 </form>
             </div>
         </div>
     </div>
+    @push('css')
+        <style>
+    .addon-checkbox {
+        display: none;
+    }
+
+    .addon-label {
+        display: inline-block;
+        padding: 10px 15px;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        margin: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .addon-checkbox:checked + .addon-label {
+        background-color: #4caf50;
+        color: white;
+        border-color: #4caf50;
+    }
+
+    .addon-label:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+    @endpush
 </x-app-layout>

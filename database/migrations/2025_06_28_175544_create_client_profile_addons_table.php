@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('client_profile_addons', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_profile_id')->constrained()->onDelete('cascade');
+            $table->foreignId('package_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('addon_id')->constrained()->onDelete('cascade');
             $table->boolean('is_active')->default(true);
             $table->timestamps();

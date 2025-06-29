@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Addon;
 use App\Models\Package;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,8 @@ class PackageController extends Controller
     public function create()
     {
         $package = new Package();
-        return view('backend.packages._form', compact('package'));
+        $addons = Addon::all();
+        return view('backend.packages._form', compact('package', 'addons'));
     }
 
     public function store(Request $request)
@@ -27,19 +29,28 @@ class PackageController extends Controller
             'description' => 'nullable|string|max:500',
             'price' => 'required|numeric',
             'duration_days' => 'required|integer|min:1',
+            'addons' => 'required|array',
+            'addons.*' => 'exists:addons,id',
         ]);
-        $package = new Package();
-        $package->name = $request->name;
-        $package->description = $request->description;
-        $package->price = $request->price;
-        $package->duration_days = $request->duration_days;
-        $package->save();
+
+        $package = Package::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'duration_days' => $request->duration_days,
+        ]);
+
+        if ($request->has('addons')) {
+            $package->addons()->attach($request->addons);
+        }
         return redirect()->route('packages.index')->with('success', 'Package created successfully');
     }
 
     public function edit(Package $package)
     {
-        return view('backend.packages._form', compact('package'));
+        $addons = Addon::all();
+        $selectedAddons = $package->addons()->pluck('addons.id')->toArray();
+        return view('backend.packages._form', compact('package', 'addons', 'selectedAddons'));
     }
 
     public function update(Request $request, Package $package)
@@ -49,6 +60,8 @@ class PackageController extends Controller
             'description' => 'nullable|string|max:500',
             'price' => 'required|numeric',
             'duration_days' => 'required|integer|min:1',
+            'addons' => 'required|array',
+            'addons.*' => 'exists:addons,id',
         ]);
         $package->update([
             'name' => $request->name,
@@ -56,6 +69,15 @@ class PackageController extends Controller
             'price' => $request->price,
             'duration_days' => $request->duration_days,
         ]);
+        
+        $package->addons()->sync($request->addons ?? []);
+
         return redirect()->route('packages.index')->with('success', 'Package updated successfully');
+    }
+
+    public function destroy(Package $package) {
+        $package->addons()->detach();
+        $package->delete();
+        return redirect()->route('packages.index')->with('success', 'Package deleted successfully');
     }
 }

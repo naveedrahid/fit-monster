@@ -23,6 +23,8 @@ class User extends Authenticatable
         'email',
         'password',
         'shift_id',
+        'phone',
+        'emergency_contact',
     ];
 
     /**

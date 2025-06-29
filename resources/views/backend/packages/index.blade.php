@@ -13,7 +13,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <h5 class="card-header">{{ __('Manage Packages') }}</h5>
                 <div class="card-header">
-                    <a href="" class="btn btn-secondary">{{ __('Add Packages') }}</a>
+                    <a href="{{ route('packages.create') }}" class="btn btn-secondary">{{ __('Add Packages') }}</a>
                 </div>
             </div>
             <div class="table-responsive text-nowrap">
@@ -39,10 +39,18 @@
                                         href="{{ route('packages.edit', $package->id) }}">
                                         <i class="icon-base bx bx-edit-alt text-white"></i>
                                     </a>
-                                    <a class="btn btn-icon btn-danger deleteAsset"
+                                    <form action="{{ route('packages.destroy', $package->id) }}" method="POST"
+                                        style="display:inline;"
+                                        onsubmit="return confirm('Are you sure you want to delete this package?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-icon btn-danger"><i class="icon-base bx bx-trash text-white"></i></button>
+                                    </form>
+
+                                    {{-- <a class=" deleteAsset"
                                         href="{{ route('packages.destroy', $package->id) }}">
-                                        <i class="icon-base bx bx-trash text-white"></i>
-                                    </a>
+                                        
+                                    </a> --}}
                                 </td>
                             </tr>
                         @empty
