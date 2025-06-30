@@ -154,41 +154,128 @@ class UserController extends Controller
         $roles = Role::pluck('name', 'name')->all();
         $userRoles = $user->roles->pluck('name', 'name')->all();
         $shifts = Shift::all();
-        return view('backend.role-permission.user.edit', [
-            'user' => $user,
-            'roles' => $roles,
-            'userRoles' => $userRoles,
-            'shifts' => $shifts
-        ]);
+        $packages = Package::all();
+        $addons = Addon::all();
+        $packageAddons = Package::with('addons')->get()->mapWithKeys(function ($package) {
+            return [$package->id => $package->addons->pluck('id')->toArray()];
+        });
+
+        // Detect plan_type
+        $clientProfile = $user->clientProfile;
+        $selectedAddonIds = $clientProfile?->addons->pluck('id')->toArray() ?? [];
+        $packageAddonIds = $clientProfile && $clientProfile->package ? $clientProfile->package->addons->pluck('id')->toArray() : [];
+
+        $planType = 'addon_only';
+        if ($clientProfile && $clientProfile->package_id && empty(array_diff($selectedAddonIds, $packageAddonIds))) {
+            $planType = 'default';
+        } elseif ($clientProfile && $clientProfile->package_id && !empty(array_diff($selectedAddonIds, $packageAddonIds))) {
+            $planType = 'custom';
+        }
+
+        return view('backend.role-permission.user.edit', compact(
+            'user',
+            'roles',
+            'userRoles',
+            'shifts',
+            'packages',
+            'addons',
+            'packageAddons',
+            'planType',
+            'selectedAddonIds'
+        ));
     }
 
     public function update(Request $request, User $user)
     {
-        $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|max:20',
             'roles' => 'required|array|min:1',
             'roles.*' => 'string|exists:roles,name',
             'shift_id' => 'required|exists:shifts,id',
-        ]);
-
-        $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'shift_id' => $request->shift_id,
+            'phone' => 'required|string|max:15',
+            'emergency_contact' => 'nullable|string|max:15',
         ];
 
-        if (!empty($request->password)) {
-            $data += [
-                'password' => Hash::make($request->password),
-            ];
+        if ($request->type === 'client') {
+            $rules['plan_type'] = ['required', Rule::in(['default', 'custom', 'addon_only'])];
+
+            if (in_array($request->plan_type, ['default', 'custom'])) {
+                $rules['package_id'] = 'required|exists:packages,id';
+            } else {
+                $rules['package_id'] = 'nullable';
+            }
+
+            $rules = array_merge($rules, [
+                'height' => 'required|numeric|min:0',
+                'weight' => 'required|numeric|min:0',
+                'goal' => 'required|string|max:255',
+                'addons' => 'nullable|array',
+                'addons.*' => 'exists:addons,id',
+            ]);
         }
 
-        $user->update($data);
-        $user->syncRoles($request->roles);
+        $validated = $request->validate($rules);
 
-        return redirect()->route('users.index')->with('status', 'User Updated Successfully with roles');
+        DB::beginTransaction();
+        try {
+            // Update user
+            $user->update([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'shift_id' => $validated['shift_id'],
+                'phone' => $validated['phone'],
+                'emergency_contact' => $validated['emergency_contact'] ?? null,
+                'password' => !empty($validated['password']) ? Hash::make($validated['password']) : $user->password,
+            ]);
+
+            $user->syncRoles($validated['roles']);
+
+            // Update client profile
+            if ($request->type === 'client') {
+                $clientProfile = $user->clientProfile;
+                $clientProfile->update([
+                    'package_id' => $validated['package_id'] ?? null,
+                    'height' => $validated['height'],
+                    'weight' => $validated['weight'],
+                    'goal' => $validated['goal'],
+                ]);
+
+                // Delete old addons
+                DB::table('client_profile_addons')->where('client_profile_id', $clientProfile->id)->delete();
+
+                // Insert updated addons
+                $addonIds = [];
+                if ($validated['plan_type'] === 'default') {
+                    $package = Package::with('addons')->find($validated['package_id']);
+                    $addonIds = $package ? $package->addons->pluck('id')->toArray() : [];
+                } elseif (!empty($validated['addons'])) {
+                    $addonIds = $validated['addons'];
+                }
+
+                if (!empty($addonIds)) {
+                    $addonData = collect($addonIds)->map(function ($addonId) use ($clientProfile, $validated) {
+                        return [
+                            'client_profile_id' => $clientProfile->id,
+                            'package_id' => $validated['package_id'] ?? null,
+                            'addon_id' => $addonId,
+                            'is_active' => true,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    })->toArray();
+
+                    DB::table('client_profile_addons')->insert($addonData);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('users.index')->with('status', 'User updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Failed to update user: ' . $e->getMessage()]);
+        }
     }
 
     public function destroy($userId)
