@@ -48,12 +48,12 @@ class UserController extends Controller
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|max:20',
             'roles' => 'required',
-            'type' => ['required', Rule::in(['client', 'trainer'])],
+            'user_type' => ['required', Rule::in(['client', 'trainer'])],
             'phone' => 'required|string|max:15',
             'emergency_contact' => 'nullable|string|max:15',
         ];
 
-        if ($request->type === 'trainer') {
+        if ($request->user_type === 'trainer') {
             $rules = array_merge($rules, [
                 'specialization' => 'required|string|max:255',
                 'experience' => 'required|integer|min:0',
@@ -61,7 +61,7 @@ class UserController extends Controller
             ]);
         }
 
-        if ($request->type === 'client') {
+        if ($request->user_type === 'client') {
             $rules['plan_type'] = ['required', Rule::in(['default', 'custom', 'addon_only'])];
 
             if (in_array($request->plan_type, ['default', 'custom'])) {
@@ -93,11 +93,12 @@ class UserController extends Controller
                 'shift_id' => $validated['shift_id'],
                 'phone' => $validated['phone'],
                 'emergency_contact' => $validated['emergency_contact'] ?? null,
+                'user_type' => $validated['user_type'],
             ]);
 
             $user->syncRoles($validated['roles']);
 
-            if ($validated['type'] === 'client') {
+            if ($validated['user_type'] === 'client') {
                 $clientProfile = $user->clientProfile()->create([
                     'package_id' => $validated['package_id'] ?? null,
                     'height' => $validated['height'],
@@ -130,8 +131,7 @@ class UserController extends Controller
                 }
             }
 
-
-            if ($validated['type'] === 'trainer') {
+            if ($validated['user_type'] === 'trainer') {
                 $user->trainerProfile()->create([
                     'specialization' => $validated['specialization'],
                     'experience' => $validated['experience'],
@@ -144,7 +144,10 @@ class UserController extends Controller
             return redirect()->route('users.index')->with('status', 'User created successfully with profile');
         } catch (\Exception $e) {
             DB::rollBack();
-            // dd('Exception caught: ', $e->getMessage(), $e->getTraceAsString());
+            dd([
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return back()->withErrors(['error' => 'Failed to create user: ' . $e->getMessage()]);
         }
     }
@@ -160,15 +163,16 @@ class UserController extends Controller
             return [$package->id => $package->addons->pluck('id')->toArray()];
         });
 
-        // Detect plan_type
-        $clientProfile = $user->clientProfile;
-        $selectedAddonIds = $clientProfile?->addons->pluck('id')->toArray() ?? [];
-        $packageAddonIds = $clientProfile && $clientProfile->package ? $clientProfile->package->addons->pluck('id')->toArray() : [];
+        $client = $user->clientProfile;
+        $trainer = $user->trainerProfile;
+
+        $selectedAddonIds = $client?->addons->pluck('id')->toArray() ?? [];
+        $packageAddonIds = $client && $client->package ? $client->package->addons->pluck('id')->toArray() : [];
 
         $planType = 'addon_only';
-        if ($clientProfile && $clientProfile->package_id && empty(array_diff($selectedAddonIds, $packageAddonIds))) {
+        if ($client && $client->package_id && empty(array_diff($selectedAddonIds, $packageAddonIds))) {
             $planType = 'default';
-        } elseif ($clientProfile && $clientProfile->package_id && !empty(array_diff($selectedAddonIds, $packageAddonIds))) {
+        } elseif ($client && $client->package_id && !empty(array_diff($selectedAddonIds, $packageAddonIds))) {
             $planType = 'custom';
         }
 
@@ -181,12 +185,15 @@ class UserController extends Controller
             'addons',
             'packageAddons',
             'planType',
-            'selectedAddonIds'
+            'selectedAddonIds',
+            'client',
+            'trainer'
         ));
     }
 
     public function update(Request $request, User $user)
     {
+        // dd($user->clientProfile);
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
@@ -196,9 +203,10 @@ class UserController extends Controller
             'shift_id' => 'required|exists:shifts,id',
             'phone' => 'required|string|max:15',
             'emergency_contact' => 'nullable|string|max:15',
+            'user_type' => 'required|string|in:client,trainer',
         ];
 
-        if ($request->type === 'client') {
+        if ($request->user_type === 'client') {
             $rules['plan_type'] = ['required', Rule::in(['default', 'custom', 'addon_only'])];
 
             if (in_array($request->plan_type, ['default', 'custom'])) {
@@ -220,7 +228,6 @@ class UserController extends Controller
 
         DB::beginTransaction();
         try {
-            // Update user
             $user->update([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
@@ -228,12 +235,12 @@ class UserController extends Controller
                 'phone' => $validated['phone'],
                 'emergency_contact' => $validated['emergency_contact'] ?? null,
                 'password' => !empty($validated['password']) ? Hash::make($validated['password']) : $user->password,
+                'user_type' => $validated['user_type'],
             ]);
 
             $user->syncRoles($validated['roles']);
 
-            // Update client profile
-            if ($request->type === 'client') {
+            if ($request->user_type === 'client') {
                 $clientProfile = $user->clientProfile;
                 $clientProfile->update([
                     'package_id' => $validated['package_id'] ?? null,
@@ -273,7 +280,14 @@ class UserController extends Controller
             DB::commit();
             return redirect()->route('users.index')->with('status', 'User updated successfully');
         } catch (\Exception $e) {
+            dd([
+                'Message' => $e->getMessage(),
+                'File' => $e->getFile(),
+                'Line' => $e->getLine(),
+                'Trace' => $e->getTraceAsString(),
+            ]);
             DB::rollBack();
+
             return back()->withErrors(['error' => 'Failed to update user: ' . $e->getMessage()]);
         }
     }

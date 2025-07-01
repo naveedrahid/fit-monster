@@ -133,8 +133,27 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                    <div class="mb-3">
+                                        <label>User Type</label>
+                                        <select name="user_type"
+                                            class="form-control @error('user_type') is-invalid @enderror">
+                                            <option value="" disabled {{ old('user_type') ? '' : 'selected' }}>
+                                                Select User Type</option>
+                                            <option value="client"
+                                                {{ old('user_type', $user->user_type) == 'client' ? 'selected' : '' }}>
+                                                Client</option>
+                                            <option value="trainer"
+                                                {{ old('user_type', $user->user_type) == 'trainer' ? 'selected' : '' }}>
+                                                Trainer</option>
+                                        </select>
+                                        @error('type')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
                                 <div class="col-12">
-                                    {{-- <input type="hidden" name="type" id="userType" value="{{ $user->type }}"> --}}
+                                    <input type="hidden" id="userType" value="{{ $user->user_type }}">
                                     <div class="nav-align-top">
                                         <ul class="nav nav-pills mt-5 mb-4 justify-content-center" role="tablist">
                                             <li class="nav-item" role="presentation">

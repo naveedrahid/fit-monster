@@ -20,9 +20,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
-        'password',
         'shift_id',
+        'email',
+        'age',
+        'gender',
+        'user_type',
+        'password',
         'phone',
         'emergency_contact',
     ];
@@ -46,15 +49,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function shift(){
+    public function shift()
+    {
         return $this->belongsTo(Shift::class);
     }
-    
-    public function trainerProfile(){
+
+    public function trainerProfile()
+    {
         return $this->hasOne(TrainerProfile::class);
     }
 
-    public function clientProfile(){
+    public function clientProfile()
+    {
         return $this->hasOne(ClientProfile::class);
     }
 }
