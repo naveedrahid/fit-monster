@@ -304,7 +304,8 @@ class UserRolePermissionSeeder extends Seeder
             'age' => 25,
             'gender' => 'male',
             'phone' => '0315000000',
-            'emergency_contact' => '0320000000'
+            'emergency_contact' => '0320000000',
+            'user_type' => 'trainer'
         ]);
 
         $superAdminUser->assignRole($superAdminRole);
@@ -319,7 +320,8 @@ class UserRolePermissionSeeder extends Seeder
             'age' => 25,
             'gender' => 'male',
             'phone' => '0315000000',
-            'emergency_contact' => '0320000000'
+            'emergency_contact' => '0320000000',
+            'user_type' => 'trainer'
         ]);
 
         $adminUser->assignRole($adminRole);
@@ -335,7 +337,8 @@ class UserRolePermissionSeeder extends Seeder
             'age' => 25,
             'gender' => 'male',
             'phone' => '0315000000',
-            'emergency_contact' => '0320000000'
+            'emergency_contact' => '0320000000',
+            'user_type' => 'trainer'
         ]);
 
         $staffUser->assignRole($staffRole);

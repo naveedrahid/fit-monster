@@ -57,11 +57,12 @@ class UserController extends Controller
                 'shift_id' => $validated['shift_id'],
                 'phone' => $validated['phone'],
                 'emergency_contact' => $validated['emergency_contact'] ?? null,
+                'user_type' => $validated['user_type'],
             ]);
 
             $user->syncRoles($validated['roles']);
 
-            if ($validated['type'] === 'client') {
+            if ($validated['user_type'] === 'client') {
                 $clientProfile = $user->clientProfile()->create([
                     'package_id' => $validated['package_id'] ?? null,
                     'height' => $validated['height'],
@@ -94,8 +95,7 @@ class UserController extends Controller
                 }
             }
 
-
-            if ($validated['type'] === 'trainer') {
+            if ($validated['user_type'] === 'trainer') {
                 $user->trainerProfile()->create([
                     'specialization' => $validated['specialization'],
                     'experience' => $validated['experience'],
@@ -108,7 +108,10 @@ class UserController extends Controller
             return redirect()->route('users.index')->with('status', 'User created successfully with profile');
         } catch (\Exception $e) {
             DB::rollBack();
-            // dd('Exception caught: ', $e->getMessage(), $e->getTraceAsString());
+            dd([
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return back()->withErrors(['error' => 'Failed to create user: ' . $e->getMessage()]);
         }
     }
