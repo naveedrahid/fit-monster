@@ -46,15 +46,57 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function shift(){
+    public function shift()
+    {
         return $this->belongsTo(Shift::class);
     }
-    
-    public function trainerProfile(){
+
+    public function trainerProfile()
+    {
         return $this->hasOne(TrainerProfile::class);
     }
 
-    public function clientProfile(){
+    public function clientProfile()
+    {
         return $this->hasOne(ClientProfile::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasManyThrough(
+            Payment::class,
+            ClientProfile::class,
+            'user_id',
+            'client_profile_id',
+            'id',
+            'id'
+        );
+    }
+
+    public function package()
+    {
+        return $this->hasOneThrough(
+            Package::class,
+            ClientProfile::class,
+            'user_id',
+            'id',
+            'id',
+            'package_id'
+        );
+    }
+
+    public function addons()
+    {
+        $clientId = optional($this->clientProfile)->id ?? 0;
+
+        return $this->belongsToMany(
+            Addon::class,
+            'client_profile_addons',
+            'client_profile_id',
+            'addon_id'
+        )
+            ->withPivot('package_id', 'is_active')
+            ->withTimestamps()
+            ->where('client_profile_addons.client_profile_id', $clientId);
     }
 }

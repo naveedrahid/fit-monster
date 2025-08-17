@@ -137,160 +137,196 @@
                                     {{-- <input type="hidden" name="type" id="userType" value="{{ $user->type }}"> --}}
                                     <div class="nav-align-top">
                                         <ul class="nav nav-pills mt-5 mb-4 justify-content-center" role="tablist">
-                                            <li class="nav-item" role="presentation">
-                                                <button type="button" class="nav-link active" role="tab"
-                                                    id="client-tab" data-bs-toggle="tab"
-                                                    data-bs-target="#navs-pills-top-client"
-                                                    aria-controls="navs-pills-top-client" aria-selected="true">
-                                                    Client
-                                                </button>
-                                            </li>
-                                            <li class="nav-item" role="presentation">
-                                                <button type="button" class="nav-link" role="tab" id="trainer-tab"
-                                                    data-bs-toggle="tab" data-bs-target="#navs-pills-top-trainer"
-                                                    aria-controls="navs-pills-top-trainer" aria-selected="false"
-                                                    tabindex="-1">
-                                                    Trainer
-                                                </button>
-                                            </li>
+                                            @if ($isClient)
+                                                <li class="nav-item" role="presentation">
+                                                    <button type="button"
+                                                        class="nav-link {{ $activeTab === 'client' ? 'active' : '' }}"
+                                                        role="tab" id="client-tab" data-bs-toggle="tab"
+                                                        data-bs-target="#navs-pills-top-client"
+                                                        aria-controls="navs-pills-top-client"
+                                                        aria-selected="{{ $activeTab === 'client' ? 'true' : 'false' }}">
+                                                        Client
+                                                    </button>
+                                                </li>
+                                            @endif
+
+                                            @if ($isTrainer)
+                                                <li class="nav-item" role="presentation">
+                                                    <button type="button"
+                                                        class="nav-link {{ $activeTab === 'trainer' ? 'active' : '' }}"
+                                                        role="tab" id="trainer-tab" data-bs-toggle="tab"
+                                                        data-bs-target="#navs-pills-top-trainer"
+                                                        aria-controls="navs-pills-top-trainer"
+                                                        aria-selected="{{ $activeTab === 'trainer' ? 'true' : 'false' }}">
+                                                        Trainer
+                                                    </button>
+                                                </li>
+                                            @endif
                                         </ul>
+
                                         <div class="tab-content">
-                                            <div class="tab-pane fade show active" id="navs-pills-top-client"
-                                                role="tabpanel">
-                                                <div class="row">
-                                                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
-                                                        <div class="form-group">
-                                                            <label>Choose Plan Type</label><br>
-                                                            <div class="form-check form-check-inline">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="plan_type" value="default"
-                                                                    id="plan_default" checked>
-                                                                <label class="form-check-label"
-                                                                    for="plan_default">Default Package</label>
-                                                            </div>
-                                                            <div class="form-check form-check-inline">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="plan_type" value="custom" id="plan_custom">
-                                                                <label class="form-check-label"
-                                                                    for="plan_custom">Custom Package</label>
-                                                            </div>
-                                                            <div class="form-check form-check-inline">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="plan_type" value="addon_only"
-                                                                    id="plan_addon_only">
-                                                                <label class="form-check-label"
-                                                                    for="plan_addon_only">Only Addons</label>
+                                            @if ($isClient)
+                                                <div class="tab-pane fade {{ $activeTab === 'client' ? 'show active' : '' }}"
+                                                    id="navs-pills-top-client" role="tabpanel">
+                                                    <div class="row">
+                                                        <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                                            <div class="form-group">
+                                                                <label>Choose Plan Type</label><br>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="plan_type" value="default"
+                                                                        id="plan_default"
+                                                                        {{ old('plan_type', $planType) === 'default' ? 'checked' : '' }}>
+                                                                    <label class="form-check-label"
+                                                                        for="plan_default">Default Package</label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="plan_type" value="custom"
+                                                                        id="plan_custom"
+                                                                        {{ old('plan_type', $planType) === 'custom' ? 'checked' : '' }}>
+                                                                    <label class="form-check-label"
+                                                                        for="plan_custom">Custom Package</label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="plan_type" value="addon_only"
+                                                                        id="plan_addon_only"
+                                                                        {{ old('plan_type', $planType) === 'addon_only' ? 'checked' : '' }}>
+                                                                    <label class="form-check-label"
+                                                                        for="plan_addon_only">Only Addons</label>
+                                                                </div>
+
+                                                                <input type="hidden" name="plan_type" id="plan_type"
+                                                                    value="{{ $planType }}">
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
-                                                        <div class="form-group package-select">
-                                                            <label>Package</label>
-                                                            <select name="package_id" id="package_id"
-                                                                class="form-control">
-                                                                <option value="">Select Package</option>
-                                                                @foreach ($packages as $package)
-                                                                    <option value="{{ $package->id }}"
-                                                                        {{ old('package_id', $client?->package_id) == $package->id ? 'selected' : '' }}>
-                                                                        {{ $package->name }}
-                                                                    </option>
-                                                                @endforeach
-                                                            </select>
-                                                            @error('package_id')
-                                                                <small class="text-danger">{{ $message }}</small>
-                                                            @enderror
+                                                        <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                                            <div class="form-group package-select">
+                                                                <label>Package</label>
+                                                                <select name="package_id" id="package_id"
+                                                                    class="form-select">
+                                                                    <option value="">-- No Package --</option>
+                                                                    @foreach ($packages as $pkg)
+                                                                        <option value="{{ $pkg->id }}"
+                                                                            {{ (string) old('package_id', $user->clientProfile?->package_id) === (string) $pkg->id ? 'selected' : '' }}>
+                                                                            {{ $pkg->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+
+                                                                @error('package_id')
+                                                                    <small class="text-danger">{{ $message }}</small>
+                                                                @enderror
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
-                                                        <div class="form-group addon-checkboxes mt-3"
-                                                            style="display: none;">
-                                                            <label>Select Addons</label>
-                                                            <div class="d-flex flex-wrap gap-2">
-                                                                @php
+                                                        <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                                            <div class="form-group addon-checkboxes mt-3"
+                                                                style="display: none;">
+                                                                <label>Select Addons</label>
+                                                                <div class="d-flex flex-wrap gap-2">
+                                                                    {{-- @php
                                                                     $selectedAddons = old(
                                                                         'addons',
-                                                                        $client?->addons?->pluck('id')->toArray() ?? [],
+                                                                        $user?->addons?->pluck('id')->toArray() ?? [],
                                                                     );
-                                                                @endphp
-                                                                @foreach ($addons as $addon)
-                                                                    <label class="btn btn-outline-primary">
-                                                                        <input type="checkbox" name="addons[]"
-                                                                            value="{{ $addon->id }}"
-                                                                            {{ in_array($addon->id, $selectedAddons) ? 'checked' : '' }}>
-                                                                        {{ $addon->name }}
-                                                                    </label>
-                                                                @endforeach
+                                                                @endphp --}}
+                                                                    @foreach ($addons as $ad)
+                                                                        <div class="col-md-3">
+                                                                            <label class="form-check">
+                                                                                <input type="checkbox"
+                                                                                    class="form-check-input"
+                                                                                    name="addon_ids[]"
+                                                                                    value="{{ $ad->id }}"
+                                                                                    {{ in_array($ad->id, old('addon_ids', $selectedAddonIds)) ? 'checked' : '' }}>
+                                                                                <span
+                                                                                    class="form-check-label">{{ $ad->name }}
+                                                                                    ({{ $ad->price }})
+                                                                                </span>
+                                                                            </label>
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+                                                                {{-- <input type="hidden" name="plan_type" id="plan_type"
+                                                                    value="{{ $planType }}"> --}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                                            <div class="mb-3">
+                                                                <label>Height</label>
+                                                                <input type="text" name="height"
+                                                                    class="form-control"
+                                                                    value="{{ old('height', $user?->clientProfile?->height) }}" />
+                                                                @error('height')
+                                                                    <small class="text-danger">{{ $message }}</small>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                                            <div class="mb-3">
+                                                                <label>Weight</label>
+                                                                <input type="text" name="weight"
+                                                                    class="form-control"
+                                                                    value="{{ old('weight', $user?->clientProfile?->weight) }}" />
+                                                                @error('weight')
+                                                                    <small class="text-danger">{{ $message }}</small>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                                            <div class="mb-3">
+                                                                <label>Goal</label>
+                                                                <input type="text" name="goal"
+                                                                    class="form-control"
+                                                                    value="{{ old('goal', $user?->clientProfile?->goal) }}" />
+                                                                @error('goal')
+                                                                    <small class="text-danger">{{ $message }}</small>
+                                                                @enderror
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
-                                                        <div class="mb-3">
-                                                            <label>Height</label>
-                                                            <input type="text" name="height" class="form-control"
-                                                                value="{{ old('height', $client?->height) }}" />
-                                                            @error('height')
-                                                                <small class="text-danger">{{ $message }}</small>
-                                                            @enderror
+                                                </div>
+                                            @endif
+                                            @if ($isTrainer)
+                                                <div class="tab-pane fade {{ $activeTab === 'trainer' ? 'show active' : '' }}"
+                                                    id="navs-pills-top-trainer" role="tabpanel">
+                                                    <div class="row">
+                                                        <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                                            <div class="mb-3">
+                                                                <label>Specialization</label>
+                                                                <input type="text" name="specialization"
+                                                                    class="form-control"
+                                                                    value="{{ old('specialization', $user?->specialization) }}" />
+                                                                @error('specialization')
+                                                                    <small class="text-danger">{{ $message }}</small>
+                                                                @enderror
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
-                                                        <div class="mb-3">
-                                                            <label>Weight</label>
-                                                            <input type="text" name="weight" class="form-control"
-                                                                value="{{ old('weight', $client?->weight) }}" />
-                                                            @error('weight')
-                                                                <small class="text-danger">{{ $message }}</small>
-                                                            @enderror
+                                                        <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                                            <div class="mb-3">
+                                                                <label>Experience</label>
+                                                                <input type="number" name="experience"
+                                                                    class="form-control"
+                                                                    value="{{ old('experience', $user?->experience) }}" />
+                                                                @error('experience')
+                                                                    <small class="text-danger">{{ $message }}</small>
+                                                                @enderror
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
-                                                        <div class="mb-3">
-                                                            <label>Goal</label>
-                                                            <input type="text" name="goal" class="form-control"
-                                                                value="{{ old('goal', $client?->goal) }}" />
-                                                            @error('goal')
-                                                                <small class="text-danger">{{ $message }}</small>
-                                                            @enderror
+                                                        <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                                                            <div class="mb-3">
+                                                                <label>Salary</label>
+                                                                <input type="text" name="salary"
+                                                                    class="form-control"
+                                                                    value="{{ old('salary', $user?->salary) }}" />
+                                                                @error('salary')
+                                                                    <small class="text-danger">{{ $message }}</small>
+                                                                @enderror
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="tab-pane fade" id="navs-pills-top-trainer" role="tabpanel">
-                                                <div class="row">
-                                                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
-                                                        <div class="mb-3">
-                                                            <label>Specialization</label>
-                                                            <input type="text" name="specialization"
-                                                                class="form-control"
-                                                                value="{{ old('specialization', $trainer?->specialization) }}" />
-                                                            @error('specialization')
-                                                                <small class="text-danger">{{ $message }}</small>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
-                                                        <div class="mb-3">
-                                                            <label>Experience</label>
-                                                            <input type="number" name="experience"
-                                                                class="form-control"
-                                                                value="{{ old('experience', $trainer?->experience) }}" />
-                                                            @error('experience')
-                                                                <small class="text-danger">{{ $message }}</small>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
-                                                        <div class="mb-3">
-                                                            <label>Salary</label>
-                                                            <input type="text" name="salary" class="form-control"
-                                                                value="{{ old('salary', $trainer?->salary) }}" />
-                                                            @error('salary')
-                                                                <small class="text-danger">{{ $message }}</small>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -303,4 +339,90 @@
                 </div>
             </div>
         </div>
+        @push('js')
+            <script>
+                $(document).ready(function() {
+                    $('#client-tab').on('click', function() {
+                        $('#userType').val('client');
+                    });
+
+                    $('#trainer-tab').on('click', function() {
+                        $('#userType').val('trainer');
+                    });
+                });
+            </script>
+            <script>
+                const packageAddons = @json($packageAddons);
+                const preSelected = @json($selectedAddonIds);
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    const planRadios = document.querySelectorAll('input[name="plan_type"]');
+                    const packageSelectWrapper = document.querySelector('.package-select');
+                    const addonCheckboxesBox = document.querySelector('.addon-checkboxes');
+                    const packageSelect = document.getElementById('package_id');
+
+                    const addonCbs = () =>
+                        document.querySelectorAll('.addon-checkboxes input[type="checkbox"][name="addon_ids[]"]');
+
+                    let initialized = false;
+
+                    function unselectAllAddons() {
+                        addonCbs().forEach(cb => cb.checked = false);
+                    }
+
+                    function selectIds(ids = []) {
+                        const set = new Set(ids.map(String));
+                        addonCbs().forEach(cb => {
+                            if (set.has(cb.value)) cb.checked = true;
+                        });
+                    }
+
+                    function autoSelectPackageAddons() {
+                        const pkgId = packageSelect.value;
+                        const ids = packageAddons[pkgId] || [];
+                        selectIds(ids);
+                    }
+
+                    function toggleViews() {
+                        const selectedPlan =
+                            document.querySelector('input[name="plan_type"]:checked')?.value || 'addon_only';
+
+                        if (selectedPlan === 'default') {
+                            packageSelectWrapper.style.display = 'block';
+                            addonCheckboxesBox.style.display = 'none';
+                            packageSelect.removeAttribute('disabled');
+                            if (initialized) unselectAllAddons();
+                        } else if (selectedPlan === 'custom') {
+                            packageSelectWrapper.style.display = 'block';
+                            addonCheckboxesBox.style.display = 'block';
+                            packageSelect.removeAttribute('disabled');
+                            if (initialized) unselectAllAddons();
+                            autoSelectPackageAddons();
+                        } else {
+                            packageSelectWrapper.style.display = 'none';
+                            addonCheckboxesBox.style.display = 'block';
+                            packageSelect.setAttribute('disabled', 'disabled');
+                            packageSelect.value = '';
+                        }
+                    }
+
+                    planRadios.forEach(r => r.addEventListener('change', () => {
+                        toggleViews();
+                        initialized = true;
+                    }));
+
+                    packageSelect.addEventListener('change', () => {
+                        const plan = document.querySelector('input[name="plan_type"]:checked')?.value;
+                        if (plan === 'custom') {
+                            unselectAllAddons();
+                            autoSelectPackageAddons();
+                        }
+                    });
+
+                    if (preSelected?.length) selectIds(preSelected);
+                    toggleViews();
+                    initialized = true;
+                });
+            </script>
+        @endpush
 </x-app-layout>

@@ -19,13 +19,23 @@ class ClientProfile extends Model
 
     public function package()
     {
-        return $this->belongsTo(Package::class);
+        return $this->belongsTo(Package::class, 'package_id');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'client_profile_id');
     }
 
     public function addons()
     {
-        return $this->belongsToMany(Addon::class, 'client_profile_addons')
-            ->withPivot('is_active')
+        return $this->belongsToMany(
+            Addon::class,
+            'client_profile_addons',
+            'client_profile_id',
+            'addon_id'
+        )
+            ->withPivot('package_id', 'is_active')
             ->withTimestamps();
     }
 }

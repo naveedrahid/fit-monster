@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('client_profile_id')->constrained()->onDelete('cascade');
             $table->decimal('amount', 10, 2);
-            $table->enum('status', ['pending', 'paid', 'failed'])->default('pending');
-            $table->string('method')->nullable();
+            $table->enum('status', ['pending', 'paid', 'failed'])->default('paid');
+            $table->enum('method', ['card', 'cash', 'bank_transfer'])->default('cash');
             $table->date('paid_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

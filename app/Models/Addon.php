@@ -16,10 +16,15 @@ class Addon extends Model
         return $this->belongsToMany(Package::class, 'addon_package');
     }
 
-    public function clientProfiles()
+    public function clients()
     {
-        return $this->belongsToMany(ClientProfile::class, 'client_profile_addons')
-            ->withPivot('is_active')
+        return $this->belongsToMany(
+            ClientProfile::class,
+            'client_profile_addons',
+            'addon_id',
+            'client_profile_id'
+        )
+            ->withPivot('package_id', 'is_active')
             ->withTimestamps();
     }
 }

@@ -49,6 +49,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', [UserController::class, 'index'])->middleware('permission:view user')->name('users.index');
         Route::get('/create', [UserController::class, 'create'])->middleware('permission:create user')->name('users.create');
+        Route::get('/{user}', [UserController::class, 'show'])->middleware('permission:view user')->name('users.show');
         Route::post('/', [UserController::class, 'store'])->middleware('permission:create user')->name('users.store');
         Route::get('/{user}/edit', [UserController::class, 'edit'])->middleware('permission:update user')->name('users.edit');
         Route::put('/{user}', [UserController::class, 'update'])->middleware('permission:update user')->name('users.update');

@@ -16,4 +16,9 @@ class Package extends Model
     {
         return $this->belongsToMany(Addon::class, 'addon_package');
     }
+
+    public function clients()
+    {
+        return $this->belongsTo(ClientProfile::class);
+    }
 }
