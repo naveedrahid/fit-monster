@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClientProfile;
+use App\Models\Payment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -23,6 +27,34 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $totalClients = ClientProfile::count();
+
+        $paidThisMonthClients = ClientProfile::query()
+            ->whereHas('latestPaidThisMonth')
+            ->with([
+                'user:id,name',
+                'latestPaidThisMonth' => function ($q) {
+                    $q->select(
+                        'payments.id',
+                        'payments.client_profile_id',
+                        'payments.amount',
+                        'payments.paid_at'
+                    );
+                },
+            ])
+            ->orderBy('id')
+            ->get();
+
+        $remainingThisMonthClients = ClientProfile::query()
+            ->whereDoesntHave('latestPaidThisMonth')
+            ->with('user:id,name')
+            ->orderBy('id')
+            ->get();
+
+        return view('home', compact(
+            'totalClients',
+            'paidThisMonthClients',
+            'remainingThisMonthClients'
+        ));
     }
 }

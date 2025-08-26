@@ -11,6 +11,10 @@ class Addon extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'price' => 'decimal:2',
+    ];
+
     public function packages()
     {
         return $this->belongsToMany(Package::class, 'addon_package');

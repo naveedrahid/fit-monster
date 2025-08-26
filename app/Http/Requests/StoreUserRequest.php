@@ -30,13 +30,13 @@ class StoreUserRequest extends FormRequest
             'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'max:20'],
             'roles'    => ['required'],
-            'type'     => ['required', Rule::in(['client', 'trainer'])],
+            'user_type'     => ['required', Rule::in(['client', 'trainer'])],
             'phone'    => ['required', 'string', 'max:15'],
             'emergency_contact' => ['nullable', 'string', 'max:15'],
         ];
 
         // Trainer-specific
-        if ($this->type === 'trainer') {
+        if ($this->user_type === 'trainer') {
             $rules = array_merge($rules, [
                 'specialization' => ['required', 'string', 'max:255'],
                 'experience'     => ['required', 'integer', 'min:0'],
@@ -45,7 +45,7 @@ class StoreUserRequest extends FormRequest
         }
 
         // Client-specific
-        if ($this->type === 'client') {
+        if ($this->user_type === 'client') {
             $rules['plan_type'] = ['required', Rule::in(['default', 'custom', 'addon_only'])];
 
             if (in_array($this->plan_type, ['default', 'custom'])) {

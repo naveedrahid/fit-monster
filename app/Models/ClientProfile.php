@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class ClientProfile extends Model
 {
@@ -37,5 +38,16 @@ class ClientProfile extends Model
         )
             ->withPivot('package_id', 'is_active')
             ->withTimestamps();
+    }
+
+    public function latestPaidThisMonth()
+    {
+        $start = now()->startOfMonth();
+        $end   = now()->endOfMonth();
+
+        return $this->hasOne(Payment::class)
+            ->where('status', 'paid')
+            ->whereBetween('paid_at', [$start, $end])
+            ->latestOfMany('paid_at');
     }
 }

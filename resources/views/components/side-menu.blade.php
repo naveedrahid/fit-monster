@@ -99,4 +99,12 @@
                 </a>
             </li>
         @endcan
+        @can('view payment')
+            <li class="menu-item {{ request()->is('payments*') ? 'active open' : '' }}">
+                <a href="{{ route('payments.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons fas fa-credit-card"></i>
+                    <div class="text-truncate">{{ __('Payment') }}</div>
+                </a>
+            </li>
+        @endcan
 </aside>

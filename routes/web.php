@@ -75,14 +75,15 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('/{package}', [PackageController::class, 'destroy'])->middleware('permission:delete package')->name('packages.destroy');
     });
 
-    // Route::group(['prefix' => 'payments'], function () {
-    //     Route::get('/', [PaymentController::class, 'index'])->middleware('permission:view payment')->name('payments.index');
-    //     Route::get('/create', [PaymentController::class, 'create'])->middleware('permission:create payment')->name('payments.create');
-    //     Route::post('/', [PaymentController::class, 'store'])->middleware('permission:create payment')->name('payments.store');
-    //     Route::get('/{payment}/edit', [PaymentController::class, 'edit'])->middleware('permission:update payment')->name('payments.edit');
-    //     Route::put('/{payment}', [PaymentController::class, 'update'])->middleware('permission:update payment')->name('payments.update');
-    //     Route::delete('/{payment}', [PaymentController::class, 'destroy'])->middleware('permission:delete payment')->name('payments.destroy');
-    // });
+    Route::group(['prefix' => 'payments'], function () {
+        Route::get('/', [PaymentController::class, 'index'])->middleware('permission:view payment')->name('payments.index');
+        Route::get('/create', [PaymentController::class, 'create'])->middleware('permission:create payment')->name('payments.create');
+        Route::post('/', [PaymentController::class, 'store'])->middleware('permission:create payment')->name('payments.store');
+        Route::get('/amount/{client_profile}', [PaymentController::class, 'amount'])->name('payments.amount');
+        // Route::get('/{payment}/edit', [PaymentController::class, 'edit'])->middleware('permission:update payment')->name('payments.edit');
+        // Route::put('/{payment}', [PaymentController::class, 'update'])->middleware('permission:update payment')->name('payments.update');
+        // Route::delete('/{payment}', [PaymentController::class, 'destroy'])->middleware('permission:delete payment')->name('payments.destroy');
+    });
 
     Route::group(['prefix' => 'shifts'], function () {
         Route::get('/', [ShiftController::class, 'index'])->middleware('permission:view shift')->name('shifts.index');
